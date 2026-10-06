@@ -52,10 +52,16 @@ export function initScene(){
   const scene=new THREE.Scene();
   const camera=new THREE.PerspectiveCamera(35,1,.1,50);
   camera.position.set(0,0,5.75);
-  const pmrem=new THREE.PMREMGenerator(renderer);
-  const room=new RoomEnvironment();
-  const env=pmrem.fromScene(room,.04);
-  scene.environment=env.texture;room.dispose();pmrem.dispose();
+  let env;
+  function rebuildEnvironment(){
+    const pmrem=new THREE.PMREMGenerator(renderer);
+    const room=new RoomEnvironment();
+    try{
+      const next=pmrem.fromScene(room,.04);
+      env?.dispose();env=next;scene.environment=env.texture;
+    }finally{room.dispose();pmrem.dispose();}
+  }
+  rebuildEnvironment();
   const group=new THREE.Group();scene.add(group);
   const material=new THREE.MeshPhysicalMaterial({color:0xc1a779,metalness:1,roughness:.23,clearcoat:.55,clearcoatRoughness:.25,envMapIntensity:1.4,side:THREE.DoubleSide});
   const sculpture=new THREE.Mesh(ribbonGeometry(),material);
@@ -80,8 +86,9 @@ export function initScene(){
 
   let reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let paused=reduce,visible=true,angle=.16,tilt=-.05,pointerDown=false,lastX=0,lastY=0,elapsed=0,lastTime=0;
-  let disposed=false;
+  let disposed=false,contextLost=false;
   function render(){
+    if(disposed||contextLost)return;
     group.rotation.y=angle;group.rotation.x=tilt;
     group.position.y=.04+Math.sin(elapsed*.38)*.035;
     dust.rotation.z=elapsed*.015;
@@ -93,14 +100,15 @@ export function initScene(){
     if(!paused&&!pointerDown){elapsed+=dt;angle+=dt*.09;}
     render();
   }
-  function syncLoop(){lastTime=0;renderer.setAnimationLoop(!paused&&visible&&!document.hidden?animate:null);if(visible)render();}
+  function syncLoop(){lastTime=0;renderer.setAnimationLoop(!disposed&&!contextLost&&!paused&&visible&&!document.hidden?animate:null);if(visible)render();}
   function updateMotion(){motionButton.textContent=paused?'播放 ▷':'暫停 Ⅱ';motionButton.setAttribute('aria-pressed',String(paused));motionButton.setAttribute('aria-label',paused?'播放雕塑動畫':'暫停雕塑動畫');status.textContent=reduce?'減少動態 · 可拖曳旋轉':'拖曳探索 · 方向鍵旋轉';syncLoop();}
-  const resizeObserver=new ResizeObserver(()=>{
-    if(disposed)return;
+  function resizeScene(){
+    if(disposed||contextLost)return;
     const {width,height}=host.getBoundingClientRect();
     if(width===0||height===0)return;
     renderer.setSize(width,height,false);camera.aspect=width/height;camera.updateProjectionMatrix();render();
-  });resizeObserver.observe(host);
+  }
+  const resizeObserver=new ResizeObserver(resizeScene);resizeObserver.observe(host);
   const intersection=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;syncLoop();},{threshold:.05});intersection.observe(host);
   document.addEventListener('visibilitychange',syncLoop);
   motionButton.addEventListener('click',()=>{paused=!paused;updateMotion();});
@@ -110,7 +118,22 @@ export function initScene(){
   const release=()=>{pointerDown=false;};host.addEventListener('pointerup',release);host.addEventListener('pointercancel',release);
   host.addEventListener('keydown',event=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(event.key)){event.preventDefault();if(event.key==='ArrowLeft')angle-=.15;if(event.key==='ArrowRight')angle+=.15;if(event.key==='ArrowUp')tilt=THREE.MathUtils.clamp(tilt-.1,-.7,.7);if(event.key==='ArrowDown')tilt=THREE.MathUtils.clamp(tilt+.1,-.7,.7);render();}});
   window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',event=>{reduce=event.matches;paused=reduce;updateMotion();});
-  renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();renderer.setAnimationLoop(null);host.classList.remove('scene-ready');status.textContent='靜態雕塑 · 內容照常可瀏覽';motionButton.disabled=true;styleButton.disabled=true;});
+  function showFallback(){
+    contextLost=true;pointerDown=false;renderer.setAnimationLoop(null);
+    host.classList.remove('scene-ready');host.dataset.renderer='static-fallback';
+    status.textContent='靜態雕塑 · 內容照常可瀏覽';
+    motionButton.disabled=true;styleButton.disabled=true;
+  }
+  renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();showFallback();});
+  renderer.domElement.addEventListener('webglcontextrestored',()=>{
+    if(disposed)return;
+    try{
+      // GPU-generated environment maps must be recreated after context recovery.
+      rebuildEnvironment();contextLost=false;resizeScene();
+      host.classList.add('scene-ready');host.dataset.renderer='three-webgl';
+      motionButton.disabled=false;styleButton.disabled=false;updateMotion();
+    }catch{showFallback();}
+  });
   host.classList.add('scene-ready');updateMotion();render();
   // Read-only diagnostics used to verify that a real WebGL scene rendered.
   host.dataset.renderer='three-webgl';host.dataset.threeRevision=THREE.REVISION;
