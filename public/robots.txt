@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://sion-rgb.github.io/sion-portfolio/sitemap.xml

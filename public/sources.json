@@ -1,0 +1,117 @@
+{
+  "checked_at": "2026-10-06",
+  "assets": [
+    {
+      "asset": "sion-portrait.jpg",
+      "source": "User-provided Visual Portfolio PDF",
+      "page": 1
+    },
+    {
+      "asset": "union-video.jpg",
+      "source": "User-provided Visual Portfolio PDF",
+      "page": 2
+    },
+    {
+      "asset": "figma-design.jpg",
+      "source": "User-provided Visual Portfolio PDF",
+      "page": 5
+    },
+    {
+      "asset": "cell-motion.jpg",
+      "source": "User-provided Visual Portfolio PDF",
+      "page": 3
+    },
+    {
+      "asset": "studio-film.jpg",
+      "source": "User-provided Visual Portfolio PDF",
+      "page": 9
+    },
+    {
+      "asset": "sakura-walk.jpg",
+      "source": "https://raw.githubusercontent.com/sion-rgb/sakura-walk/main/docs/v1.3-third-person.png",
+      "label": "GitHub README image"
+    },
+    {
+      "asset": "pixel-toolbox.jpg",
+      "source": "https://raw.githubusercontent.com/sion-rgb/pixel-media-toolbox/main/docs/screenshots/v1.4.0/home.jpg",
+      "label": "GitHub README image"
+    },
+    {
+      "asset": "picopals.jpg",
+      "source": "https://raw.githubusercontent.com/sion-rgb/picopals-8bit/main/public/screenshot.png",
+      "label": "GitHub README image"
+    },
+    {
+      "asset": "pixel-quickcut.jpg",
+      "source": "https://raw.githubusercontent.com/sion-rgb/pixel-quickcut/main/docs/screenshots/pixel-quickcut-home.png",
+      "label": "GitHub README image"
+    },
+    {
+      "asset": "sakura-sprint.jpg",
+      "source": "https://raw.githubusercontent.com/sion-rgb/sakura-sprint/main/selected-review/front.png",
+      "label": "GitHub README image"
+    }
+  ],
+  "github_repositories": [
+    {
+      "name": "8bit-life-simulator",
+      "url": "https://github.com/sion-rgb/8bit-life-simulator",
+      "updated_at": "2026-08-24T18:14:33Z"
+    },
+    {
+      "name": "auto-publisher",
+      "url": "https://github.com/sion-rgb/auto-publisher",
+      "updated_at": "2026-09-26T18:06:17Z"
+    },
+    {
+      "name": "bencao-neijing-tiaoyang",
+      "url": "https://github.com/sion-rgb/bencao-neijing-tiaoyang",
+      "updated_at": "2026-07-19T19:23:53Z"
+    },
+    {
+      "name": "canto-suite",
+      "url": "https://github.com/sion-rgb/canto-suite",
+      "updated_at": "2026-09-14T16:17:42Z"
+    },
+    {
+      "name": "daily-bible-app",
+      "url": "https://github.com/sion-rgb/daily-bible-app",
+      "updated_at": "2026-06-19T04:14:24Z"
+    },
+    {
+      "name": "picopals-8bit",
+      "url": "https://github.com/sion-rgb/picopals-8bit",
+      "updated_at": "2026-07-28T18:45:11Z"
+    },
+    {
+      "name": "pixel-media-toolbox",
+      "url": "https://github.com/sion-rgb/pixel-media-toolbox",
+      "updated_at": "2026-08-31T01:29:16Z"
+    },
+    {
+      "name": "pixel-quickcut",
+      "url": "https://github.com/sion-rgb/pixel-quickcut",
+      "updated_at": "2026-08-30T17:52:58Z"
+    },
+    {
+      "name": "sakura-sprint",
+      "url": "https://github.com/sion-rgb/sakura-sprint",
+      "updated_at": "2026-09-26T07:56:36Z"
+    },
+    {
+      "name": "sakura-walk",
+      "url": "https://github.com/sion-rgb/sakura-walk",
+      "updated_at": "2026-09-30T17:42:49Z"
+    },
+    {
+      "name": "starlight-arena-prototype",
+      "url": "https://github.com/sion-rgb/starlight-arena-prototype",
+      "updated_at": "2026-07-10T10:12:27Z"
+    },
+    {
+      "name": "tactical-slash",
+      "url": "https://github.com/sion-rgb/tactical-slash",
+      "updated_at": "2026-10-05T12:56:36Z"
+    }
+  ]
+}
