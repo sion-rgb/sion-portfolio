@@ -97,10 +97,10 @@ export function initScene(host,onReady){
   function render(state){
     lastState=state;if(contextLost||disposed||!width)return;
     const viewHeight=2*Math.tan(THREE.MathUtils.degToRad(35)/2)*camera.position.z,viewWidth=viewHeight*camera.aspect;
-    const baseDiameter=state.mobile?Math.min(width*(height<=700?.66:.77),500):Math.min(width*.42,570);
+    const baseDiameter=state.diameter??(state.mobile?Math.min(width*(height<=700?.66:.77),500):Math.min(width*.42,570));
     const scale=baseDiameter/height*viewHeight/4.44*state.scale;
     lens.root.scale.setScalar(scale);
-    lens.root.position.set(viewWidth*(state.mobile?.01:-.01),viewHeight*(state.mobile?.02:-.05)+Math.sin(state.time*.4)*.03,0);
+    lens.root.position.set(viewWidth*((state.centerX??(state.mobile?.51:.49))-.5),viewHeight*(.5-(state.centerY??(state.mobile?.48:.55)))+Math.sin(state.time*.4)*.03,0);
     lens.root.rotation.set(state.rx,state.ry,state.rz);
     const separation=[-.85,-.32,.33,1.0];lens.layers.forEach((group,i)=>{group.position.z=state.explode*separation[i];});
     lens.blades.forEach((blade,i)=>{blade.rotation.z=i*Math.PI*2/9+Math.sin(state.time*.3)*.055;});

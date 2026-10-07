@@ -1,0 +1,209 @@
+/* The same authored optical object now travels through the complete page. */
+.journey .story{background:var(--story-color,#29291f);transition:background .55s}
+.journey main{overflow-x:clip}
+.journey .story-sticky{background:transparent;z-index:2}
+.world-stage{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;contain:layout paint}
+.world-stage .scene-host{pointer-events:none;cursor:default}
+.world-stage .workbench{z-index:0;opacity:var(--bench-opacity,1)}
+.world-stage .lens-object{left:var(--lens-x,49%);top:var(--lens-y,55%);width:var(--lens-size,42vw);transform:translate(-50%,-50%) translateY(var(--scene-y,0px)) rotateX(var(--scene-tilt,0deg)) rotateY(var(--scene-turn,0deg)) rotateZ(-16deg) scale(var(--scene-scale,1))}
+.journey .section-shell > *,.site-footer > *,.sources-section > *{position:relative;z-index:2}
+.lens-input{position:absolute;left:28%;top:25%;width:42%;height:50%;z-index:4;cursor:grab;touch-action:pan-y}
+.lens-input:active{cursor:grabbing}
+.lens-input:focus-visible{outline:1px dashed #f4ebd8;outline-offset:8px;border-radius:50%}
+.motion-dock{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:30;display:flex;align-items:center;gap:16px;padding:5px 7px 5px 18px;border:1px solid #f4ebd849;background:#17251ef0;color:#f4ebd8;border-radius:40px;box-shadow:0 5px 22px #0002;backdrop-filter:blur(12px)}
+.motion-dock .journey-label{font-size:9px;letter-spacing:.07em;font-weight:700;white-space:nowrap}
+.motion-dock button{min-width:118px;min-height:44px;font-size:11px;padding:10px 16px;background:#f4ebd8;color:#202b25;border-radius:28px;font-weight:700}
+.journey-meter{height:22px;width:2px;background:#f4ebd82e;display:block;position:relative}
+.journey-meter:after{content:'';position:absolute;left:0;bottom:0;width:100%;height:calc(var(--page-progress,0)*100%);background:#ed8653}
+.journey .scene-controls{padding-bottom:15px}
+.journey .story-bottom{bottom:24px}
+.journey .scroll-cue{padding-bottom:15px}
+.journey .kinetic-line{display:block;transform:translateX(calc(var(--title-shift,0px)*var(--line-direction)));will-change:transform}
+.journey .kinetic-line > span{display:inline}
+.journey-reveal{opacity:0;transform:translateY(35px);transition:opacity .7s,transform .85s cubic-bezier(.2,.7,.1,1)}
+.journey-reveal.is-revealed{opacity:1;transform:none}
+.journey .big-star{animation:journey-turn 20s linear infinite}
+
+/* A pinned film reel: actual supplied commercial work, with accessible controls. */
+.work-scroll{height:400svh}
+.journey .creative-cases{position:sticky;top:90px;height:calc(100svh - 190px);min-height:380px;perspective:1400px}
+.journey .work-scroll .creative-case{position:absolute;inset:35px 0 85px;min-height:0;padding:0;border:0;grid-template-columns:32% 1fr;gap:8%;opacity:0;visibility:hidden;transform:translateY(70px) scale(.95);transition:opacity .5s,transform .75s cubic-bezier(.2,.75,.15,1),visibility .5s;pointer-events:none}
+.journey .work-scroll .creative-case .case-copy{order:0}
+.journey .work-scroll .creative-case.reel-active{opacity:1;visibility:visible;transform:none;pointer-events:auto}
+.journey .work-scroll .case-copy{transform:translateY(calc(var(--card-drift,0)*-24px))}
+.journey .work-scroll .creative-image-button{transform:rotate(calc(var(--case-direction)*2deg + var(--card-drift,0)*-4deg + var(--ambient,0)*1deg)) translateY(calc(var(--card-drift,0)*30px));transition:transform .12s linear;box-shadow:0 35px 50px #202b2528}
+.journey .work-scroll .creative-image-button img{max-height:calc(100svh - 320px);min-height:0;aspect-ratio:1.55;object-fit:cover;transform:scale(calc(1.02 + var(--card-drift,0)*.035));transition:transform .12s linear}
+.work-reel-nav{position:absolute;bottom:12px;left:0;right:0;display:flex;align-items:center;gap:8px;border-top:1px solid #202b2535;padding-top:15px;color:var(--ink)}
+.reel-caption{font-size:9px;font-weight:700;margin-right:auto;letter-spacing:.08em}
+.work-reel-nav button{width:44px;height:44px;border:1px solid #202b2545;border-radius:50%;font-size:11px}
+.work-reel-nav button[aria-current=true]{background:var(--orange);color:var(--paper);border-color:var(--orange)}
+.reel-track{width:22%;height:2px;background:#202b2528;margin-left:25px}
+.reel-track i{display:block;height:2px;transform-origin:left;background:var(--orange);transform:scaleX(var(--reel-progress,0));width:100%}
+
+/* Historic CV figures count up once; the final values and source stay intact. */
+.journey .impact-section{position:relative;padding-top:85px;padding-bottom:100px}
+.journey .impact-section > .impact-orbit{position:absolute;z-index:0;width:min(65vw,720px);height:min(65vw,720px);right:-10%;top:-8%;opacity:.25;pointer-events:none}
+.impact-orbit i{position:absolute;border:1px solid #f4ebd8;border-radius:50%;inset:0}
+.impact-orbit i:nth-child(2){inset:12%;border-style:dashed}
+.impact-orbit i:nth-child(3){inset:24%}
+.impact-orbit i:first-child:after{content:'';position:absolute;left:50%;top:-6px;width:12px;height:12px;border-radius:50%;background:#f4ebd8}
+.impact-orbit span{position:absolute;top:50%;left:0;font-size:9px;letter-spacing:.2em;transform:rotate(-90deg);transform-origin:left}
+.impact-orbit{animation:journey-turn 30s linear infinite;animation-play-state:paused}
+.impact-section.is-inview .impact-orbit{animation-play-state:running}
+.metric-value{font-variant-numeric:tabular-nums;white-space:nowrap;display:inline-block}
+.impact-main > strong > .metric-value{font-size:1em;letter-spacing:inherit;min-width:3ch}
+.impact-main > strong .metric-value > span{font-size:.6em;letter-spacing:-.02em}
+.impact-arrow{animation:arrow-breathe 3s ease-in-out infinite;animation-play-state:paused}
+.impact-section.is-inview .impact-arrow{animation-play-state:running}
+
+/* Pinned experiment screens, then the full native project index. */
+.lab-scroll{height:300svh}
+.journey .lab-showcase{position:sticky;top:90px;perspective:1300px}
+.journey .feature-layout{height:calc(100svh - 205px);min-height:430px;transform:rotateY(var(--screen-turn,0deg)) translateY(var(--screen-lift,0px));transform-origin:center;box-shadow:0 30px 50px #0004;animation:screen-enter .65s cubic-bezier(.16,.8,.2,1)}
+.journey .feature-image img{height:100%;min-height:0;object-fit:contain;background:#111d17;transform:scale(1.015);animation:screen-pan 14s ease-in-out infinite alternate;animation-play-state:paused}
+.journey .lab-showcase.is-inview .feature-image img{animation-play-state:running}
+.journey .feature-copy{padding:25px 30px}
+.lab-tabs{position:relative;z-index:3}
+.lab-tabs button{min-height:44px}
+.lab-gauge{display:flex;align-items:center;gap:30px;padding:22px 0;font-size:9px;letter-spacing:.1em}
+.lab-gauge i{height:2px;flex:1;background:#f4ebd82b;position:relative}
+.lab-gauge i:after{content:'';display:block;height:2px;background:#e6804e;width:calc(var(--lab-progress,0)*100%)}
+.journey .project-row{transition:background .3s,padding .3s}
+.journey .project-row:hover{background:#f4ebd807;padding:0 12px}
+.project-row[open] .project-detail{animation:detail-enter .5s ease-out}
+.project-row .project-plus{transition:transform .3s}
+.project-row[open] .project-plus{transform:rotate(45deg)}
+
+/* Portrait aperture, moving frame, and a line that follows the career journey. */
+.journey .about-photo{transform:rotate(var(--portrait-turn,-3deg));transition:transform .15s linear}
+.journey .about-photo img{clip-path:circle(calc(8% + var(--portrait-open,1)*72%) at 50% 42%);transform:scale(calc(1.16 - var(--portrait-open,1)*.16));transition:clip-path .15s linear,transform .15s linear}
+.journey .about-photo > i{animation:journey-turn 22s linear infinite;animation-play-state:paused}
+.journey .about-photo.is-inview > i{animation-play-state:running}
+.journey .timeline{position:relative;padding-left:34px}
+.journey .timeline:before,.journey .timeline:after{content:'';position:absolute;left:5px;top:0;bottom:0;width:2px;background:#202b251c}
+.journey .timeline:after{background:var(--orange);transform-origin:top;transform:scaleY(var(--timeline-progress,0))}
+.journey .timeline-entry{position:relative;transition:opacity .5s,transform .65s;opacity:.48;transform:translateX(20px)}
+.journey .timeline-entry:before{content:'';position:absolute;width:11px;height:11px;left:-33px;top:37px;border-radius:50%;border:2px solid #b7b6a9;background:#e6e3d7;z-index:1;transition:background .4s,transform .4s}
+.journey .timeline-entry.timeline-past{opacity:1;transform:none}
+.journey .timeline-entry.timeline-past:before{background:var(--orange);border-color:var(--orange)}
+.journey .timeline-current:before{box-shadow:0 0 0 6px #df593123;transform:scale(1.15)}
+
+/* A kinetic invitation and a running final strip carry motion to the bottom. */
+.journey .contact-section{padding-bottom:90px}
+.journey .contact-section h2 > .contact-line{display:block;font-size:1em;margin:0;transform:translateX(calc((1 - var(--contact-open,1))*-22%));opacity:var(--contact-open,1);transition:transform .15s linear,opacity .15s linear}
+.journey .contact-section h2 > .contact-line:nth-child(2){transform:translateX(calc((1 - var(--contact-open,1))*22%))}
+.contact-line i{font-style:normal;font-size:.6em;display:inline-block;margin-left:20px;vertical-align:top;animation:arrow-breathe 3s ease-in-out infinite}
+.closing-ribbon{position:relative;z-index:2;background:#f4ebd8;color:#202b25;overflow:hidden;padding:22px 0;border-top:1px solid #202b2530;border-bottom:1px solid #202b2530}
+.closing-ribbon > div{display:flex;width:max-content;animation:closing-run 24s linear infinite;animation-play-state:paused}
+.closing-ribbon.is-inview > div{animation-play-state:running}
+.closing-ribbon span{white-space:nowrap;font-size:clamp(28px,4vw,65px);font-weight:900;letter-spacing:-.045em;padding-right:45px}
+.closing-ribbon b{font-size:.9em;color:var(--orange);margin:0 25px}
+.journey .sources-section{padding-bottom:105px}
+@keyframes journey-turn{to{transform:rotate(360deg)}}
+@keyframes arrow-breathe{50%{transform:translate(8px,-8px)}}
+@keyframes screen-enter{from{opacity:0;transform:translateY(40px) rotateX(8deg)}to{opacity:1}}
+@keyframes screen-pan{to{transform:scale(1.045) translateY(-1%)}}
+@keyframes detail-enter{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:none}}
+@keyframes closing-run{to{transform:translateX(-50%)}}
+
+@media(max-width:1100px){.journey .work-scroll .creative-case{grid-template-columns:36% 1fr;gap:6%}.journey .feature-copy{padding:20px}.journey .feature-copy p{font-size:12px}}
+@media(max-width:780px){
+  .lens-input{left:12%;top:31%;width:76%;height:32%}
+  .motion-dock{bottom:10px;gap:10px;padding-left:12px;max-width:95vw}
+  .motion-dock .journey-label{font-size:8px}
+  .motion-dock button{font-size:10px;min-width:104px}
+  .journey .story-bottom{bottom:76px}
+  .journey .hero-note{bottom:162px!important}
+  .journey .hero-copy{bottom:178px!important}
+  .journey .chapter-copy{bottom:172px}
+  .journey .creative-cases{top:76px;height:calc(100svh - 165px);min-height:0}
+  .journey .work-scroll .creative-case{inset:15px 0 76px;display:flex;flex-direction:column;justify-content:center;gap:24px}
+  .journey .work-scroll .case-copy{width:100%;transform:translateY(calc(var(--card-drift,0)*-10px))}
+  .journey .work-scroll .case-copy .eyebrow{margin:0 0 12px;font-size:8px}
+  .journey .work-scroll .case-copy h3{font-size:25px;line-height:1.25;margin-bottom:10px}
+  .journey .work-scroll .case-copy .case-number{font-size:48px}
+  .journey .work-scroll .case-client{font-size:11px;margin:8px 0}
+  .journey .work-scroll .case-role{font-size:10px;line-height:1.5;margin:8px 0}
+  .journey .work-scroll .case-button{min-height:44px;margin-top:3px;padding:9px 16px}
+  .journey .work-scroll .creative-image-button{flex-shrink:0}
+  .journey .work-scroll .creative-image-button img{aspect-ratio:1.55;max-height:33svh}
+  .work-reel-nav{bottom:13px;gap:7px;padding-top:12px}
+  .reel-caption{font-size:7px;letter-spacing:0}
+  .reel-track{display:none}
+  .work-reel-nav button{width:44px;min-height:44px;border-radius:24px}
+  .journey .impact-section{padding-top:60px;padding-bottom:65px}
+  .journey .lab-showcase{top:78px}
+  .journey .feature-layout{height:calc(100svh - 235px);min-height:0;display:flex;flex-direction:column}
+  .journey .feature-image{flex-shrink:0}
+  .journey .feature-image img{height:auto;aspect-ratio:1.7;max-height:27svh;object-fit:cover}
+  .journey .feature-copy{padding:20px;flex:1}
+  .journey .feature-copy h3{font-size:30px;margin:12px 0}
+  .journey .feature-copy p{font-size:11px;line-height:1.7;margin:8px 0}
+  .journey .feature-copy .project-tags{margin:7px 0 14px}
+  .journey .lab-tabs{gap:12px}
+  .journey .lab-tabs button{font-size:7px}
+  .lab-gauge{padding:17px 0;font-size:8px}
+  .journey .timeline{padding-left:25px}
+  .journey .timeline-entry:before{left:-24px;top:29px}
+  .journey .contact-section h2{font-size:18vw}
+  .journey .contact-section h2 > .contact-line i{font-size:.55em;margin-left:8px}
+  .journey .contact-section{padding-bottom:65px}
+}
+@media(max-height:700px) and (max-width:780px){
+  .journey .hero-note{bottom:151px!important}.journey .hero-copy{bottom:151px!important}.journey .chapter-copy{bottom:158px!important}
+  .journey .work-scroll .creative-case{gap:12px;inset:4px 0 68px}
+  .journey .work-scroll .case-copy h3{font-size:20px;margin:0 0 6px}
+  .journey .work-scroll .case-copy .case-number{font-size:35px}
+  .journey .work-scroll .case-copy .eyebrow{font-size:7px;margin-bottom:7px}
+  .journey .work-scroll .case-client{margin:4px 0}.journey .work-scroll .case-role{margin:4px 0;font-size:9px}
+  .journey .work-scroll .creative-image-button img{max-height:26svh}
+  .journey .feature-layout{min-height:0;height:calc(100svh - 229px)}
+  .journey .feature-image img{max-height:21svh}
+  .journey .feature-copy{padding:12px 15px}
+  .journey .feature-copy .eyebrow{font-size:8px}
+  .journey .feature-copy h3{font-size:23px;margin:8px 0}
+  .journey .feature-copy p{font-size:10px;line-height:1.5;margin:5px 0}
+  .journey .feature-copy .project-tags{display:none}
+  .journey .feature-links{font-size:10px;min-height:30px;align-items:center}
+  .lab-gauge{padding:12px 0}
+}
+@media(max-width:360px){.reel-caption{display:none}.work-reel-nav{justify-content:flex-end}}
+/* The pause is available in every chapter, while scroll navigation remains usable. */
+.motion-paused *, .motion-paused *:before,.motion-paused *:after{animation-play-state:paused!important;transition-duration:0s!important}
+.motion-paused .journey-reveal{opacity:1;transform:none}
+.motion-paused .kinetic-line{transform:none}
+.motion-paused .feature-layout,.motion-paused .project-row[open] .project-detail{animation:none;opacity:1;transform:none}
+.motion-reduced .world-stage{display:none}
+.motion-reduced .lens-input,.motion-reduced .scene-controls,.motion-reduced .chapter-nav{display:none}
+.motion-reduced .story{height:auto!important}
+.motion-reduced .story-sticky{position:relative;height:auto;min-height:0!important;background:#263e33;padding:95px var(--gutter) 45px}
+.motion-reduced .story-panels{position:relative;padding:0}
+.motion-reduced .story-panel{position:relative;inset:auto;opacity:1;visibility:visible;transform:none;padding:35px 0;min-height:0;margin:0}
+.motion-reduced .hero-heading,.motion-reduced .hero-note,.motion-reduced .hero-copy,.motion-reduced .chapter-heading,.motion-reduced .chapter-copy{position:relative!important;inset:auto!important;margin:25px 0;max-width:none!important}
+.motion-reduced .hero-note{display:none}
+.motion-reduced .hero-copy{margin-top:35px;max-width:100%!important}
+.motion-reduced .hero-copy p{font-size:32px}
+.motion-reduced .chapter-copy{display:block}.motion-reduced .chapter-copy p{font-size:14px}
+.motion-reduced .story-bottom{position:relative;inset:auto}
+.motion-reduced .work-scroll,.motion-reduced .lab-scroll{height:auto}
+.motion-reduced .creative-cases,.motion-reduced .lab-showcase{position:relative;top:auto;height:auto;min-height:0}
+.motion-reduced .work-scroll .creative-case{position:relative;inset:auto;visibility:visible;opacity:1;pointer-events:auto;transform:none;padding:40px 0;min-height:0;border-top:1px solid #202b2535}
+.motion-reduced .work-scroll .creative-image-button,.motion-reduced .work-scroll .case-copy,.motion-reduced .work-scroll .creative-image-button img{transform:none}
+.motion-reduced .work-reel-nav{display:none}
+.motion-reduced .feature-layout{height:auto;min-height:0;transform:none}
+.motion-reduced .feature-image img{height:auto;max-height:none;transform:none}
+.motion-reduced .journey-reveal,.motion-reduced .timeline-entry{opacity:1;transform:none}
+.motion-reduced .about-photo img{clip-path:none;transform:none}
+.motion-reduced .contact-line{opacity:1;transform:none!important}
+.motion-reduced .kinetic-line{transform:none}
+.motion-reduced .closing-ribbon > div{animation:none}
+@media(max-height:480px){
+  .journey .work-scroll,.journey .lab-scroll{height:auto}
+  .journey .creative-cases,.journey .lab-showcase{position:relative;top:0;height:auto;min-height:0}
+  .journey .work-scroll .creative-case{position:relative;inset:auto;padding:35px 0;opacity:1;visibility:visible;transform:none;pointer-events:auto;min-height:0;border-top:1px solid #202b2535}
+  .journey .work-scroll .creative-image-button img{max-height:none}
+  .journey .work-scroll .case-copy{transform:none}
+  .journey .work-reel-nav{display:none}
+  .journey .feature-layout{height:auto;min-height:0}
+  .journey .feature-image img{height:auto}
+}

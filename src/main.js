@@ -1,4 +1,5 @@
 import './style.css';
+import './journey.css';
 import { creativeWorks, projects, experience } from './data.js';
 import { initStory } from './story.js';
 
@@ -88,4 +89,4 @@ document.querySelector('.dialog-close').addEventListener('click',()=>dialog.clos
 dialog.addEventListener('click',event=>{ if(event.target===dialog){const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)dialog.close();} });
 dialog.addEventListener('close',()=>document.body.classList.remove('dialog-open'));
 
-initStory();
+initStory({selectFeature:showFeature});
