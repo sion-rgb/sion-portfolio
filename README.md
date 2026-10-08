@@ -7,7 +7,9 @@ A public Traditional Chinese portfolio combining Sion Ng's CV, commercial multim
 ## Experience
 
 - Full-screen creative workbench with an original machined optical assembly, aperture blades, engraved dial, brushed metal and studio lighting.
-- A continuous scroll journey from the four introductory scenes through commercial work, impact, experiments, portrait, career, contact and the closing ribbon. The same optical object travels between all chapters using one shared animation clock.
+- A continuous scroll journey from the four introductory scenes through commercial work, impact, creative process, experiments, portrait, career, contact and the closing ribbon. The same optical object travels between all chapters using one shared animation clock.
+- A four-step creative process with scroll and manual controls: FRAME, DESIGN, MOVE and PLAY. Original perforated film, fanning design cards and sculpted code brackets float around the lens and respond to the selected step.
+- A clickable constellation connects all 12 curated projects to their expandable details. Moving signal paths, a discipline ticker, layered photo reels, a scanning line and pointer feedback add motion across the page.
 - Animated CSS/SVG depth layers preserve the scroll story and interaction when WebGL is unavailable or its context is lost. GPU environment maps rebuild when the context returns.
 - A pinned film reel of four real commercial case studies, with scroll-driven transitions, floating photographs, manual navigation and accessible native dialogs.
 - Three pinned experiment screens change with scrolling or manual tabs, followed by an expandable index of 12 projects with category filters.
@@ -41,15 +43,15 @@ The PDF documents and portfolio photographs were supplied by the portfolio owner
 
 YouTube metrics are the CV's historical maintenance-period figures, not live analytics. Project summaries describe the public README and do not imply all device behavior or third-party integrations were revalidated here. The publisher's live account integration limit and Sakura Sprint's PARTIAL art status are preserved.
 
-Update project data in `src/data.js`, the page copy in `index.html`, and styles in `src/style.css` and `src/journey.css`. `src/story.js` owns the interaction/scroll state; `src/scene.js` renders the original Three.js lens. This is a curated snapshot; no authenticated GitHub API runs in visitors' browsers. Google Fonts is optional; system fonts are the fallback.
+Update project data in `src/data.js`, the page copy in `index.html`, and styles in `src/style.css`, `src/journey.css` and `src/embellishments.css`. `src/story.js` owns the shared interaction/scroll state; `src/scene.js` renders the lens, with original props in `src/studio-elements.js`. `src/embellishments.js` adds the creative process and constellation. This is a curated snapshot; no authenticated GitHub API runs in visitors' browsers. Google Fonts is optional; system fonts are the fallback.
 
-The immersive scroll narrative, tactile workshop direction and oversized typography were inspired by [Oryzo by Lusion](https://oryzo.ai/). Its assets, models and source code were not used. The lens is an original portfolio metaphor, not a real product.
+The immersive scroll narrative, tactile workshop direction and oversized typography were inspired by [Oryzo by Lusion](https://oryzo.ai/). Its assets, models and source code were not used. The lens, film, design cards and code brackets are original portfolio metaphors, not real products or application screenshots.
 
 ## Verification
 
-The full-page motion update was checked on 7 October 2026 in Chromium (Edge) at 1440×1000, 1366×768, 768×1024, 390×844 and 320×568. Checks cover continuous rendered motion in every chapter after the intro, scrolling and manual gallery navigation, portrait aperture, career progress, real pointer/keyboard rotation, paused pixels, commercial dialogs, filters, unobstructed narrow-screen actions, reduced motion and two GPU loss/restoration cycles. A separate browser page denies WebGL contexts to check the animated CSS fallback and paused/reduced-motion detail visibility. These viewport checks do not certify performance on physical phones or revalidate the linked applications.
+The expanded motion update was checked on 8 October 2026 in Chromium (Edge) at 1440×1000, 1366×768, 1280×600, 768×1024, 390×844 and 320×568. The 85-check regression covers continuous rendered motion in every chapter after the intro, scrolling and manual gallery navigation, portrait aperture, career progress, real pointer/keyboard rotation, paused pixels, commercial dialogs, filters, unobstructed narrow-screen actions, reduced motion and two GPU loss/restoration cycles. All 46 additional checks passed for automatic/manual process steps, all 12 constellation links, filtering recovery, layout, render budget and new runtime errors. A separate browser page denies WebGL contexts to check the animated CSS props and manual process controls. These viewport checks do not certify performance on physical phones or revalidate the linked applications.
 
-Measured scene budget: 25 draw calls, 58,280 triangles, 16 geometries, four textures; DPR caps are 1.65 on desktop and 1.5 on narrower screens. No post-processing chain or shadow-map pass is used. The original PDF hashes remain unchanged.
+Measured scene budget with all new props visible: 39 draw calls, 58,912 triangles, 20 geometries, six textures; DPR caps are 1.65 on desktop and 1.5 on narrower screens. No post-processing chain or shadow-map pass is used. The original PDF hashes remain unchanged.
 
 ## Deployment
 

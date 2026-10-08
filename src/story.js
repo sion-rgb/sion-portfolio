@@ -1,3 +1,5 @@
+import {initEmbellishments} from './embellishments.js';
+
 const clamp=(value,min=0,max=1)=>Math.min(max,Math.max(min,value));
 const mix=(a,b,t)=>a+(b-a)*t;
 const ease=value=>1-Math.pow(1-value,3);
@@ -49,8 +51,9 @@ export function initStory({selectFeature}){
   ];
   metrics.forEach(item=>{item.node.setAttribute('aria-label',item.label);item.node.innerHTML=`<span class="metric-value" aria-hidden="true">${item.prefix}${item.value.toFixed(1)}${item.suffix}</span>`;item.visual=item.node.firstElementChild;});
 
-  const regionNodes=[story,document.querySelector('#work'),impact,document.querySelector('#projects'),document.querySelector('#about'),document.querySelector('#experience'),document.querySelector('#contact'),ribbon,document.querySelector('#sources')];
-  const names=['01 / EXPLORE','02 / SELECTED WORK','03 / IMPACT','04 / EXPERIMENT LAB','05 / THE HUMAN','06 / THE JOURNEY','07 / LET’S CREATE','08 / KEEP CREATING','08 / KEEP CREATING'];
+  const effects=initEmbellishments({world,schedule});
+  const regionNodes=[story,document.querySelector('#work'),impact,effects.process,document.querySelector('#projects'),document.querySelector('#about'),document.querySelector('#experience'),document.querySelector('#contact'),ribbon,document.querySelector('#sources')];
+  const names=['01 / EXPLORE','02 / SELECTED WORK','03 / IMPACT','04 / CREATIVE PROCESS','05 / EXPERIMENT LAB','06 / THE HUMAN','07 / THE JOURNEY','08 / LET’S CREATE','09 / KEEP CREATING','09 / KEEP CREATING'];
   const navigation=[...document.querySelectorAll('.desktop-nav a')];
   const portraitNode=document.querySelector('.about-photo'),dockLabel=dock.querySelector('.journey-label');
   const positions=new Map();let dirty=true,stageHeight=innerHeight,workHeight=0,labHeight=0,pageTravel=1,lastRegion=-1;
@@ -60,7 +63,7 @@ export function initStory({selectFeature}){
   const colors=['#29291f','#191f1b','#b6492b','#263e33'];
   function measure(){
     const y=scrollY;[...regionNodes,workScroll,labScroll,timeline,portraitNode,...titleLines,...reveal,...entries].forEach(el=>{const r=el.getBoundingClientRect();positions.set(el,{top:r.top+y,height:r.height});});
-    stageHeight=stage.offsetHeight;workHeight=workGrid.offsetHeight;labHeight=lab.offsetHeight;pageTravel=Math.max(1,root.scrollHeight-innerHeight);dirty=false;
+    stageHeight=stage.offsetHeight;workHeight=workGrid.offsetHeight;labHeight=lab.offsetHeight;pageTravel=Math.max(1,root.scrollHeight-innerHeight);effects.measure(y);dirty=false;
   }
   const travel=node=>Math.max(1,node.offsetHeight-(node===story?stage.offsetHeight:node===workScroll?workGrid.offsetHeight:lab.offsetHeight));
   function jumpTo(node,index,count){const top=node.getBoundingClientRect().top+scrollY;scrollTo({top:top+travel(node)*index/(count-1),behavior:reduced.matches?'instant':'smooth'});}
@@ -88,6 +91,8 @@ export function initStory({selectFeature}){
     if(shortScreen.matches)cases.forEach(card=>{card.inert=false;card.setAttribute('aria-hidden','false');});
     let region=0;regionNodes.forEach((node,i)=>{if(positions.get(node).top<=y+h*.3)region=i;});
     const regionBox=positions.get(regionNodes[region]),regionProgress=clamp((y+h*.7-regionBox.top)/(regionBox.height+h*.4));
+    const phase=regionNodes[region].id||'closing';
+    const studioState=effects.update({y,h,time,paused,reduced:reduce,phase,p});
     root.dataset.journey=String(region);host.dataset.chapter=region===0?String(chapter):regionNodes[region].id||'closing';
     if(region!==lastRegion){dockLabel.textContent=names[region];lastRegion=region;}
     root.style.setProperty('--page-progress',String(y/pageTravel));
@@ -99,6 +104,7 @@ export function initStory({selectFeature}){
       {x:mobile?.51:.49,y:mobile?.48:.55,d:baseDiameter,opacity:1,rx:mix(a.rx,b.rx,t),ry:mix(a.ry,b.ry,t),scale:mix(a.scale,b.scale,t),explode:mix(a.explode,b.explode,t)},
       {x:.86,y:.28,d:mobile?150:260,opacity:.28,rx:.4,ry:-.4,scale:1,explode:.3},
       {x:.79,y:.3,d:mobile?170:360,opacity:.42,rx:-.4,ry:.5,scale:1,explode:.7},
+      {x:mobile?.52:.68,y:.43,d:mobile?Math.min(w*.47,220):Math.min(w*.28,410),opacity:1,rx:.1,ry:-.28+studioState.studioMode*.26,scale:1,explode:studioState.studioMode===2?.7:.08},
       {x:.89,y:.22,d:mobile?130:240,opacity:.35,rx:.2,ry:1.1,scale:1,explode:.85},
       {x:.87,y:.28,d:mobile?150:250,opacity:.28,rx:.3,ry:-.5,scale:1,explode:.2},
       {x:.88,y:.32,d:mobile?120:210,opacity:.25,rx:-.2,ry:.7,scale:1,explode:.8},
@@ -109,7 +115,7 @@ export function initStory({selectFeature}){
     const target=targets[region],prev=targets[Math.max(0,region-1)];
     const blend=region===0?1:clamp((y+h*.3-regionBox.top)/(h*.55));
     const moving=!reduce&&!paused;
-    const state={rx:mix(prev.rx,target.rx,blend)+tilt+(moving?pointerY*.07:0),ry:mix(prev.ry,target.ry,blend)+turn+Math.sin(time*.45)*.09+(moving?pointerX*.1:0),rz:-.22+Math.sin(time*.3)*.05,scale:mix(prev.scale,target.scale,blend),explode:disassembled?1.4:mix(prev.explode,target.explode,blend),centerX:mix(prev.x,target.x,blend),centerY:mix(prev.y,target.y,blend),diameter:mix(prev.d,target.d,blend),time,mobile,p};
+    const state={rx:mix(prev.rx,target.rx,blend)+tilt+(moving?pointerY*.07:0),ry:mix(prev.ry,target.ry,blend)+turn+Math.sin(time*.45)*.09+(moving?pointerX*.1:0),rz:-.22+Math.sin(time*.3)*.05,scale:mix(prev.scale,target.scale,blend),explode:disassembled?1.4:mix(prev.explode,target.explode,blend),centerX:mix(prev.x,target.x,blend),centerY:mix(prev.y,target.y,blend),diameter:mix(prev.d,target.d,blend),time,mobile,p,compact:mobile&&h<=700,...studioState};
     if(region>0&&!reduce){state.ry+=regionProgress*.6;state.rx+=Math.sin(regionProgress*Math.PI)*.18;}
     const opacity=mix(prev.opacity,target.opacity,blend);
     host.style.opacity=String(opacity);
@@ -134,13 +140,13 @@ export function initStory({selectFeature}){
     lab.classList.toggle('is-inview',lb.top<y+h&&lb.top+lb.height>y);
     const tb=positions.get(timeline),tp=clamp((y+h*.6-tb.top)/tb.height);timeline.style.setProperty('--timeline-progress',String(reduce?1:tp));
     entries.forEach(entry=>{const r=positions.get(entry);entry.classList.toggle('timeline-past',reduce||y+h*.6>r.top);entry.classList.toggle('timeline-current',r.top<y+h*.6&&r.top+r.height>y+h*.6);});
-    const cb=positions.get(regionNodes[6]),cp=clamp((y+h*.85-cb.top)/(h*.7));contactTitle.style.setProperty('--contact-open',String(reduce||paused?1:cp));
+    const cb=positions.get(document.querySelector('#contact')),cp=clamp((y+h*.85-cb.top)/(h*.7));contactTitle.style.setProperty('--contact-open',String(reduce||paused?1:cp));
     impact.classList.toggle('is-inview',positions.get(impact).top<y+h&&positions.get(impact).top+positions.get(impact).height>y);
     ribbon.classList.toggle('is-inview',positions.get(ribbon).top<y+h);
     if(metricStart===null&&positions.get(impact).top<y+h*.8)metricStart=time;
     if(metricStart!==null){const progress=reduce||paused||metricDone?1:ease(clamp((time-metricStart)/1.4));if(progress===1)metricDone=true;metrics.forEach(item=>{const value=`${item.prefix}${(item.value*progress).toFixed(1)}${item.suffix}`;if(item.last!==value){item.visual.innerHTML=value;item.last=value;}});}
-    const current=region===0?'home':region<=2?'work':region===3?'projects':region<=5?'about':'contact';
-    document.body.classList.toggle('light-header',[1,4,5].includes(region));navigation.forEach(link=>link.classList.toggle('current',link.hash===`#${current}`));
+    const current=phase==='home'?'home':['work','impact','process'].includes(phase)?'work':phase==='projects'?'projects':['about','experience'].includes(phase)?'about':'contact';
+    document.body.classList.toggle('light-header',['work','about','experience'].includes(phase));navigation.forEach(link=>link.classList.toggle('current',link.hash===`#${current}`));
     if(!paused)frame=requestAnimationFrame(render);
   }
   function schedule(){if(!frame&&!disposed&&!document.hidden)frame=requestAnimationFrame(render);}
@@ -159,9 +165,9 @@ export function initStory({selectFeature}){
   input.addEventListener('pointermove',event=>{if(!dragging)return;turn+=(event.clientX-lastX)*.005;tilt=clamp(tilt+(event.clientY-lastY)*.003,-.65,.65);lastX=event.clientX;lastY=event.clientY;schedule();});
   ['pointerup','pointercancel','lostpointercapture'].forEach(name=>input.addEventListener(name,release));window.addEventListener('blur',release);
   input.addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(event.key))return;event.preventDefault();if(event.key==='ArrowLeft')turn-=.18;if(event.key==='ArrowRight')turn+=.18;if(event.key==='ArrowUp')tilt=clamp(tilt-.12,-.65,.65);if(event.key==='ArrowDown')tilt=clamp(tilt+.12,-.65,.65);schedule();});
-  window.addEventListener('pointermove',event=>{pointerX=event.clientX/innerWidth-.5;pointerY=event.clientY/innerHeight-.5;},{passive:true});
+  window.addEventListener('pointermove',event=>{pointerX=event.clientX/innerWidth-.5;pointerY=event.clientY/innerHeight-.5;effects.pointerMove(event);schedule();},{passive:true});
   function loadGraphics(){if(graphics||loadingGraphics||reduced.matches||disposed)return;loadingGraphics=true;import('./scene.js').then(({initScene})=>{if(!disposed){graphics=initScene(host,schedule);schedule();}}).catch(()=>{host.dataset.renderer='css-depth';}).finally(()=>{loadingGraphics=false;});}
   loadGraphics();
-  window.addEventListener('pagehide',event=>{if(event.persisted)return;disposed=true;cancelAnimationFrame(frame);layoutObserver.disconnect();graphics?.dispose();},{once:true});
+  window.addEventListener('pagehide',event=>{if(event.persisted)return;disposed=true;cancelAnimationFrame(frame);layoutObserver.disconnect();graphics?.dispose();effects.dispose();},{once:true});
   controls();
 }

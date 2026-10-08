@@ -1,5 +1,6 @@
 import './style.css';
 import './journey.css';
+import './embellishments.css';
 import { creativeWorks, projects, experience } from './data.js';
 import { initStory } from './story.js';
 

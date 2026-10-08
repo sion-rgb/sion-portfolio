@@ -1,11 +1,11 @@
 {
   "name": "sion-portfolio",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "check": "node --check src/main.js && node --check src/story.js && node --check src/scene.js && node --check src/data.js && node scripts/check-content.mjs",
+    "check": "node --check src/main.js && node --check src/story.js && node --check src/scene.js && node --check src/studio-elements.js && node --check src/embellishments.js && node --check src/data.js && node scripts/check-content.mjs",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1"
   },

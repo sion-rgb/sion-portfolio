@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { createStudioElements } from './studio-elements.js';
 
 function annulus(outer,inner,depth){
   const shape=new THREE.Shape();shape.absarc(0,0,outer,0,Math.PI*2,false);
@@ -85,6 +86,7 @@ export function initScene(host,onReady){
   }
   rebuildEnvironment();
   const lens=createLens();scene.add(lens.root);
+  const studio=createStudioElements();scene.add(studio.root);
   const key=new THREE.DirectionalLight(0xffddae,2.8);key.position.set(-3,5,5);scene.add(key);
   const fill=new THREE.DirectionalLight(0xc5e1d2,1.8);fill.position.set(3,-2,3);scene.add(fill);
   const rim=new THREE.DirectionalLight(0xff996b,2);rim.position.set(-4,-2,-2);scene.add(rim);
@@ -104,6 +106,7 @@ export function initScene(host,onReady){
     lens.root.rotation.set(state.rx,state.ry,state.rz);
     const separation=[-.85,-.32,.33,1.0];lens.layers.forEach((group,i)=>{group.position.z=state.explode*separation[i];});
     lens.blades.forEach((blade,i)=>{blade.rotation.z=i*Math.PI*2/9+Math.sin(state.time*.3)*.055;});
+    studio.update(state,scale,lens.root.position);
     renderer.render(scene,camera);
     host.dataset.frames=String(++renderCount);
     host.dataset.calls=String(renderer.info.render.calls);host.dataset.triangles=String(renderer.info.render.triangles);
