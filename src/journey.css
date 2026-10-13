@@ -61,6 +61,8 @@
 .journey .lab-showcase{position:sticky;top:90px;perspective:1300px}
 .journey .feature-layout{height:calc(100svh - 205px);min-height:430px;transform:rotateY(var(--screen-turn,0deg)) translateY(var(--screen-lift,0px));transform-origin:center;box-shadow:0 30px 50px #0004;animation:screen-enter .65s cubic-bezier(.16,.8,.2,1)}
 .journey .feature-image img{height:100%;min-height:0;object-fit:contain;background:#111d17;transform:scale(1.015);animation:screen-pan 14s ease-in-out infinite alternate;animation-play-state:paused}
+.journey .feature-image-player{background:radial-gradient(ellipse at center,#142e3d 0,#071019 72%)}
+.journey .feature-image-player img{width:auto;max-width:42%;height:94%;object-fit:contain;background:transparent;box-shadow:0 14px 45px #0007;transform:none;animation:none}
 .journey .lab-showcase.is-inview .feature-image img{animation-play-state:running}
 .journey .feature-copy{padding:25px 30px}
 .lab-tabs{position:relative;z-index:3}
