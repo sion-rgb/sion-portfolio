@@ -24,13 +24,14 @@ creativeGrid.innerHTML = creativeWorks.map((work, i) => `
 const categories = {games:'遊戲與互動',tools:'影音與工具',content:'內容與生活'};
 const projectGrid = document.querySelector('#project-grid');
 projectGrid.innerHTML = projects.map((project,i) => {
-  const repository = project.repositoryUrl ?? `https://github.com/sion-rgb/${project.id}`;
+  const repository = project.repositoryUrl ?? (project.storeStatus ? null : `https://github.com/sion-rgb/${project.id}`);
+  const projectLink = repository ? `<a href="${repository}" target="_blank" rel="noopener">${escape(project.repositoryLabel ?? 'GitHub')} <span aria-hidden="true">↗</span></a>` : '';
   const image=project.image?`<img src="${asset(`assets/${project.image}`)}" alt="${escape(project.title)} — ${escape(project.imageSource)}" loading="lazy">`:'';
   return `<details class="project-row" data-id="${project.id}" data-category="${project.category}">
     <summary><span class="project-number">${String(i+1).padStart(2,'0')}</span><h3>${escape(project.title)}</h3><span class="project-category">${categories[project.category]}</span><span class="project-plus" aria-hidden="true">＋</span></summary>
     <div class="project-detail">${image}<div><p class="project-subtitle">${escape(project.subtitle)}</p><p class="project-description">${escape(project.description)}</p>${project.image?`<p class="project-image-source">${escape(project.imageSource)}</p>`:''}
     <div class="project-tags">${project.tags.map(tag=>`<span>${escape(tag)}</span>`).join('')}</div>
-    <div class="project-card-links"><a href="${repository}" target="_blank" rel="noopener">${escape(project.repositoryLabel ?? 'GitHub')} <span aria-hidden="true">↗</span></a>${project.demo?`<a href="${project.demo}" target="_blank" rel="noopener">開啟體驗 <span aria-hidden="true">↗</span></a>`:''}</div>
+    ${project.storeStatus?`<p class="project-store-status">${escape(project.storeStatus)}</p>`:''}<div class="project-card-links">${projectLink}${project.demo?`<a href="${project.demo}" target="_blank" rel="noopener">開啟體驗 <span aria-hidden="true">↗</span></a>`:''}</div>
     </div></div></details>`;
 }).join('');
 

@@ -75,6 +75,7 @@
 .project-row[open] .project-detail{animation:detail-enter .5s ease-out}
 .project-row .project-plus{transition:transform .3s}
 .project-row[open] .project-plus{transform:rotate(45deg)}
+.project-store-status{display:inline-flex;width:fit-content;margin:20px 0 0;padding:8px 11px;border:1px solid #ffac6a70;color:#ffd0ad;font-size:11px;line-height:1.6}
 
 /* Portrait aperture, moving frame, and a line that follows the career journey. */
 .journey .about-photo{transform:rotate(var(--portrait-turn,-3deg));transition:transform .15s linear}
