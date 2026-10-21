@@ -1,0 +1,93 @@
+/* A quiet alternative skin for the same portfolio and public project data. */
+html.wabi-theme{--paper:#ebe3d4;--ink:#383b33;--orange:#86694e;--line:rgba(56,59,51,.24);font-family:'Noto Serif TC','Noto Sans TC',serif;background:#ebe3d4;color:#383b33;scroll-behavior:smooth}
+.wabi-theme body{background:#ebe3d4;color:#383b33}
+.wabi-theme .site-header{color:#383b33;background:linear-gradient(#ebe3d4ed,#ebe3d400)}
+.wabi-theme .header-contact{border-radius:0;border-color:#777967}
+.wabi-theme .header-contact:hover{background:#3d4a3b;color:#ebe3d4}
+.wabi-theme .story{height:auto!important;min-height:0;background:#d9d1c0}
+.enhanced.wabi-theme .story-sticky{position:relative;height:100svh;min-height:620px;background:transparent;overflow:hidden}
+.wabi-theme .story-panels{position:absolute;inset:0;padding:0;pointer-events:none}
+.enhanced.wabi-theme .story-panel{display:none;inset:0;opacity:1;visibility:visible;transform:none}
+.enhanced.wabi-theme .story-panel[data-chapter="0"]{display:block}
+.wabi-theme .world-stage{position:absolute;inset:0;height:100svh;contain:paint}
+.wabi-theme .world-stage .workbench,.wabi-theme .lens-input,.wabi-theme .scene-controls,.wabi-theme .chapter-nav,.wabi-theme .motion-dock,.wabi-theme .signal-field,.wabi-theme .orbit-props,.wabi-theme .pointer-halo{display:none!important}
+.wabi-theme .scene-host{opacity:1!important;cursor:default}
+.wabi-theme .lens-object{display:none}
+.wabi-theme .scene-host:not(.scene-ready){background:radial-gradient(ellipse at 74% 80%,#aaa58f 0 10%,transparent 10.2%),radial-gradient(circle at 73% 39%,#e8dfca 0 7%,transparent 7.2%),linear-gradient(177deg,#d9d1c0 0 58%,#777d68 58.2% 100%)}
+.wabi-theme .hero-heading{left:var(--gutter);top:clamp(120px,19vh,190px);z-index:2}
+.wabi-theme .hero-heading .eyebrow{color:#69725e;letter-spacing:.16em}
+.wabi-theme .hero-heading h1{font-weight:500;letter-spacing:-.09em;color:#394137}
+.wabi-theme .hero-asterisk{color:#9a7352}
+.wabi-theme .hero-signature{letter-spacing:.16em;color:#62675a}
+.wabi-theme .hero-note{display:none}
+.wabi-theme .hero-copy{top:auto!important;right:auto!important;left:var(--gutter);bottom:clamp(120px,18vh,175px);width:min(470px,calc(100vw - var(--gutter)*2));max-width:470px!important;padding:14px 26px 14px 0;background:linear-gradient(90deg,#ebe3d4f5 0%,#ebe3d4ed 78%,#ebe3d400 100%);z-index:3;color:#3d4037}
+.wabi-theme .hero-copy p{font-size:clamp(27px,4vw,48px);font-weight:500;line-height:1.55;letter-spacing:.06em}
+.wabi-theme .hero-copy p span{color:#82664b}
+.wabi-theme .hero-copy small{font-size:13px;line-height:2;color:#62675a}
+.wabi-theme .hero-copy-wabi{display:block!important}
+.wabi-theme .hero-copy-original{display:none!important}
+.theme-toggle{display:inline-flex;gap:12px;align-items:center;flex:none;padding:10px 13px;border:1px solid currentColor;border-radius:30px;font-family:inherit;font-size:11px;letter-spacing:.05em;color:inherit;white-space:nowrap}
+.theme-toggle span{font-size:18px;transition:transform .25s}
+.theme-toggle:hover span{transform:translate(3px,-3px)}
+.wabi-theme .theme-toggle{border-color:#8b775e;color:#4d4e42;background:#ebe3d4}
+.wabi-theme .story-bottom{left:auto;right:var(--gutter);bottom:35px;z-index:4;color:#55594e}
+.wabi-theme .scroll-cue{font-size:9px;letter-spacing:.1em}
+.wabi-theme .scroll-arrow{border-style:solid;border-color:#888777}
+.wabi-theme .work-section,.wabi-theme .about-section{background:#ebe3d4;color:#383b33}
+.wabi-theme .impact-section,.wabi-theme .contact-section{background:#69735e;color:#f0e9da}
+.wabi-theme .projects-section{background:#d9d7c8;color:#3d4438}
+.wabi-theme .experience-section{background:#ddd6c5;color:#383b33}
+.wabi-theme .sources-section,.wabi-theme .site-footer{background:#343a32;color:#eee7d8}
+.wabi-theme .creative-case{border-color:#383b3333}
+.wabi-theme .case-copy .case-number,.wabi-theme .project-row summary:hover h3{color:#86694e}
+.wabi-theme .creative-image-button{background:#d3c9b5;box-shadow:0 18px 35px #413d3018}
+.wabi-theme .case-button{border-color:#727466}
+.wabi-theme .filters button{border-color:#62695980}
+.wabi-theme .filters button[aria-pressed=true]{background:#465143;color:#f0e9da;border-color:#465143}
+.wabi-theme .feature-layout{background:#e4dccb}
+.wabi-theme .project-row,.wabi-theme .timeline-entry{border-color:#383b3333}
+.wabi-theme .project-card-links a{color:#6a725f}
+.wabi-theme .project-store-status{color:#765f47;border-color:#9a8061}
+.wabi-theme .work-scroll,.wabi-theme .lab-scroll{height:auto}
+.wabi-theme .creative-cases,.wabi-theme .lab-showcase{position:relative;top:auto;height:auto;min-height:0;perspective:none}
+.wabi-theme .work-scroll .creative-case{position:relative;inset:auto;min-height:0;padding:55px 0;opacity:1;visibility:visible;transform:none;pointer-events:auto}
+.wabi-theme .work-scroll .case-copy,.wabi-theme .work-scroll .creative-image-button,.wabi-theme .work-scroll .creative-image-button img{transform:none}
+.wabi-theme .work-reel-nav,.wabi-theme .lab-gauge{display:none}
+.wabi-theme .feature-image img{min-height:0;aspect-ratio:1.55;object-fit:cover}
+.wabi-theme .process-section{background:#e4ddce;color:#3b4037}
+.wabi-theme .process-sticky{position:relative;top:auto;height:auto;min-height:0;padding-top:80px;padding-bottom:80px}
+.wabi-theme .process-reticle,.wabi-theme .process-track{display:none}
+.wabi-theme .process-heading,.wabi-theme .process-caption,.wabi-theme .process-controls{position:relative;inset:auto;width:auto;max-width:680px;margin:24px 0}
+.wabi-theme .process-caption{opacity:1;transform:none}
+.wabi-theme .process-caption h3{font-family:inherit}
+.wabi-theme .process-controls{display:flex;flex-wrap:wrap;gap:8px}
+.wabi-theme .process-controls button{border:1px solid #727466;color:#3b4037;background:transparent}
+.wabi-theme .process-controls button[aria-pressed=true]{background:#495442;color:#f0e9da}
+.wabi-theme .craft-ticker{background:#465143;color:#eae3d3}
+.wabi-theme .craft-grid,.wabi-theme .sources-section{border-color:#eae3d342}
+.wabi-theme .contact-section h2{font-weight:500;letter-spacing:-.04em}
+.wabi-theme .closing-ribbon{background:#d9d1c0;color:#545b4c}
+.wabi-theme .journey-reveal{transition-duration:.45s}
+.wabi-theme .motion-paused .journey-reveal{opacity:1;transform:none}
+@media(max-width:780px){
+  .enhanced.wabi-theme .story-sticky{min-height:100svh}
+  .wabi-theme .hero-heading{top:clamp(112px,17vh,155px)}
+  .wabi-theme .hero-heading h1{font-size:clamp(100px,24vw,170px);margin:18px 0}
+  .wabi-theme .hero-signature{font-size:8px}
+  .wabi-theme .hero-copy{bottom:clamp(120px,19vh,165px);max-width:280px!important}
+  .site-header .theme-toggle{padding:8px 9px;font-size:9px;gap:5px}
+  .site-header .theme-toggle span{font-size:14px}
+  .wabi-theme .hero-copy p{font-size:clamp(26px,7vw,35px)}
+  .wabi-theme .hero-copy small{font-size:11px}
+  .wabi-theme .story-bottom{left:var(--gutter);right:var(--gutter);bottom:28px}
+  .wabi-theme .scroll-cue small{font-size:9px}
+  .wabi-theme .work-scroll .creative-case{display:grid;grid-template-columns:1fr;gap:28px;padding:36px 0}
+  .wabi-theme .work-scroll .creative-case .case-copy{width:auto}
+  .wabi-theme .work-scroll .creative-image-button img{max-height:42svh;aspect-ratio:1.5}
+  .wabi-theme .work-scroll .case-copy .eyebrow{font-size:9px}
+  .wabi-theme .work-scroll .case-copy h3{font-size:28px}
+}
+@media(prefers-reduced-motion:reduce){.wabi-theme .world-stage{display:none}.wabi-theme .scene-fallback{display:none}}
+.motion-reduced.wabi-theme .world-stage{display:block}
+.motion-reduced.wabi-theme .scene-host{background:radial-gradient(ellipse at 74% 80%,#aaa58f 0 10%,transparent 10.2%),radial-gradient(circle at 73% 39%,#e8dfca 0 7%,transparent 7.2%),linear-gradient(177deg,#d9d1c0 0 58%,#777d68 58.2% 100%)}
+.motion-reduced.wabi-theme .scene-host canvas{display:none}

@@ -115,13 +115,13 @@ export function initStory({selectFeature}){
     const target=targets[region],prev=targets[Math.max(0,region-1)];
     const blend=region===0?1:clamp((y+h*.3-regionBox.top)/(h*.55));
     const moving=!reduce&&!paused;
-    const state={rx:mix(prev.rx,target.rx,blend)+tilt+(moving?pointerY*.07:0),ry:mix(prev.ry,target.ry,blend)+turn+Math.sin(time*.45)*.09+(moving?pointerX*.1:0),rz:-.22+Math.sin(time*.3)*.05,scale:mix(prev.scale,target.scale,blend),explode:disassembled?1.4:mix(prev.explode,target.explode,blend),centerX:mix(prev.x,target.x,blend),centerY:mix(prev.y,target.y,blend),diameter:mix(prev.d,target.d,blend),time,mobile,p,compact:mobile&&h<=700,...studioState};
+    const state={rx:mix(prev.rx,target.rx,blend)+tilt+(moving?pointerY*.07:0),ry:mix(prev.ry,target.ry,blend)+turn+Math.sin(time*.45)*.09+(moving?pointerX*.1:0),rz:-.22+Math.sin(time*.3)*.05,scale:mix(prev.scale,target.scale,blend),explode:disassembled?1.4:mix(prev.explode,target.explode,blend),centerX:mix(prev.x,target.x,blend),centerY:mix(prev.y,target.y,blend),diameter:mix(prev.d,target.d,blend),time,mobile,p,compact:mobile&&h<=700,theme:root.classList.contains('wabi-theme')?'wabi':'workbench',...studioState};
     if(region>0&&!reduce){state.ry+=regionProgress*.6;state.rx+=Math.sin(regionProgress*Math.PI)*.18;}
     const opacity=mix(prev.opacity,target.opacity,blend);
     host.style.opacity=String(opacity);
     world.style.setProperty('--lens-x',`${state.centerX*100}%`);world.style.setProperty('--lens-y',`${state.centerY*100}%`);world.style.setProperty('--lens-size',`${state.diameter}px`);
     world.style.setProperty('--scene-tilt',`${state.rx*180/Math.PI}deg`);world.style.setProperty('--scene-turn',`${state.ry*180/Math.PI}deg`);world.style.setProperty('--scene-scale',String(state.scale));world.style.setProperty('--explode',String(state.explode));world.style.setProperty('--scene-y',`${Math.sin(time*.4)*3}px`);
-    if(!reduce)graphics?.render(state);
+    if(!reduce||root.classList.contains('wabi-theme'))graphics?.render(state);
 
     const wb=positions.get(workScroll),wp=clamp((y-wb.top)/Math.max(1,wb.height-workHeight));
     const wi=Math.min(3,Math.floor(wp*4));setCase(wi);
@@ -147,7 +147,7 @@ export function initStory({selectFeature}){
     if(metricStart!==null){const progress=reduce||paused||metricDone?1:ease(clamp((time-metricStart)/1.4));if(progress===1)metricDone=true;metrics.forEach(item=>{const value=`${item.prefix}${(item.value*progress).toFixed(1)}${item.suffix}`;if(item.last!==value){item.visual.innerHTML=value;item.last=value;}});}
     const current=phase==='home'?'home':['work','impact','process'].includes(phase)?'work':phase==='projects'?'projects':['about','experience'].includes(phase)?'about':'contact';
     document.body.classList.toggle('light-header',['work','about','experience'].includes(phase));navigation.forEach(link=>link.classList.toggle('current',link.hash===`#${current}`));
-    if(!paused)frame=requestAnimationFrame(render);
+    if(!paused&&(!root.classList.contains('wabi-theme')||y<h))frame=requestAnimationFrame(render);
   }
   function schedule(){if(!frame&&!disposed&&!document.hidden)frame=requestAnimationFrame(render);}
   window.addEventListener('scroll',schedule,{passive:true});window.addEventListener('resize',()=>{dirty=true;schedule();},{passive:true});
@@ -166,7 +166,7 @@ export function initStory({selectFeature}){
   ['pointerup','pointercancel','lostpointercapture'].forEach(name=>input.addEventListener(name,release));window.addEventListener('blur',release);
   input.addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(event.key))return;event.preventDefault();if(event.key==='ArrowLeft')turn-=.18;if(event.key==='ArrowRight')turn+=.18;if(event.key==='ArrowUp')tilt=clamp(tilt-.12,-.65,.65);if(event.key==='ArrowDown')tilt=clamp(tilt+.12,-.65,.65);schedule();});
   window.addEventListener('pointermove',event=>{pointerX=event.clientX/innerWidth-.5;pointerY=event.clientY/innerHeight-.5;effects.pointerMove(event);schedule();},{passive:true});
-  function loadGraphics(){if(graphics||loadingGraphics||reduced.matches||disposed)return;loadingGraphics=true;import('./scene.js').then(({initScene})=>{if(!disposed){graphics=initScene(host,schedule);schedule();}}).catch(()=>{host.dataset.renderer='css-depth';}).finally(()=>{loadingGraphics=false;});}
+  function loadGraphics(){if(graphics||loadingGraphics||reduced.matches&&!root.classList.contains('wabi-theme')||disposed)return;loadingGraphics=true;import('./scene.js').then(({initScene})=>{if(!disposed){graphics=initScene(host,schedule);schedule();}}).catch(error=>{host.dataset.renderer='css-depth';host.dataset.rendererError=String(error?.message??error);}).finally(()=>{loadingGraphics=false;});}
   loadGraphics();
   window.addEventListener('pagehide',event=>{if(event.persisted)return;disposed=true;cancelAnimationFrame(frame);layoutObserver.disconnect();graphics?.dispose();effects.dispose();},{once:true});
   controls();

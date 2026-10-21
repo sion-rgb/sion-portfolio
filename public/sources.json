@@ -1,6 +1,16 @@
 {
-  "checked_at": "2026-10-14",
+  "checked_at": "2026-10-21",
   "assets": [
+    {
+      "asset": "wabi-stone-moss.png",
+      "source": "Generated with OpenAI image generation for the portfolio's Three.js Wabi-Sabi scene",
+      "label": "Generated seamless stone and moss material skin"
+    },
+    {
+      "asset": "wabi-studio-1k.hdr",
+      "source": "https://polyhaven.com/a/studio_small_03",
+      "label": "Poly Haven HDRI environment, CC0"
+    },
     {
       "asset": "sion-portrait.jpg",
       "source": "User-provided Visual Portfolio PDF",
@@ -102,6 +112,16 @@
       "url": "https://github.com/sion-rgb/auralis-android",
       "name": "auralis-android",
       "updated_at": "2026-10-13T15:02:01Z"
+    },
+    {
+      "name": "tidal-odyssey",
+      "url": "https://github.com/sion-rgb/tidal-odyssey",
+      "updated_at": "2026-10-19T13:39:03Z"
+    },
+    {
+      "name": "roadster-rocket-lab",
+      "url": "https://github.com/sion-rgb/roadster-rocket-lab",
+      "updated_at": "2026-10-19T12:20:11Z"
     }
   ]
 }

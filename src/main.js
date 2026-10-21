@@ -1,6 +1,7 @@
 import './style.css';
 import './journey.css';
 import './embellishments.css';
+import './wabi.css';
 import { creativeWorks, projects, experience } from './data.js';
 import { initStory } from './story.js';
 
@@ -93,3 +94,16 @@ dialog.addEventListener('click',event=>{ if(event.target===dialog){const rect=di
 dialog.addEventListener('close',()=>document.body.classList.remove('dialog-open'));
 
 initStory({selectFeature:showFeature});
+
+const themeToggle=document.querySelector('#theme-toggle');
+function setTheme(wabi){
+  document.documentElement.classList.toggle('wabi-theme',wabi);
+  themeToggle.setAttribute('aria-pressed',String(wabi));
+  themeToggle.setAttribute('aria-label',wabi?'返回原本主題':'切換至侘寂主題');
+  themeToggle.innerHTML=wabi?'原本主題 <span aria-hidden="true">↗</span>':'侘寂主題 <span aria-hidden="true">↗</span>';
+  document.body.classList.toggle('light-header',wabi);
+  try{localStorage.setItem('sion-portfolio-theme',wabi?'wabi':'workbench');}catch{}
+  window.dispatchEvent(new Event('resize'));
+}
+themeToggle.addEventListener('click',()=>setTheme(!document.documentElement.classList.contains('wabi-theme')));
+try{setTheme(localStorage.getItem('sion-portfolio-theme')==='wabi');}catch{setTheme(false);}
