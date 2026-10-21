@@ -104,6 +104,7 @@ function setTheme(wabi){
   document.body.classList.toggle('light-header',wabi);
   try{localStorage.setItem('sion-portfolio-theme',wabi?'wabi':'workbench');}catch{}
   window.dispatchEvent(new Event('resize'));
+  window.dispatchEvent(new Event('portfolio-theme-change'));
 }
 themeToggle.addEventListener('click',()=>setTheme(!document.documentElement.classList.contains('wabi-theme')));
 try{setTheme(localStorage.getItem('sion-portfolio-theme')==='wabi');}catch{setTheme(false);}

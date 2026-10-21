@@ -60,7 +60,7 @@ export function initEmbellishments({world,schedule}){
   function measure(y){const r=process.getBoundingClientRect();bounds={top:r.top+y,height:r.height,stage:sticky.offsetHeight};ambient.forEach(el=>{const r=el.getBoundingClientRect();measured.set(el,{top:r.top+y,height:r.height});});box=null;}
   function update({y,h,time,paused,reduced,phase,p}){
     const progress=clamp((y-bounds.top)/Math.max(1,bounds.height-bounds.stage));
-    const step=Math.min(3,Math.floor(progress*4));if(step!==scrollStep){scrollStep=step;manual=false;}if(!manual&&!reduced)select(step);
+    const step=Math.min(3,Math.floor(progress*4));if(!document.documentElement.classList.contains('wabi-theme')){if(step!==scrollStep){scrollStep=step;manual=false;}if(!manual&&!reduced)select(step);}
     process.style.setProperty('--process-progress',String(progress));process.classList.toggle('is-inview',bounds.top<y+h&&bounds.top+bounds.height>y);
     world.dataset.phase=phase;
     world.dataset.studio=String(selected);

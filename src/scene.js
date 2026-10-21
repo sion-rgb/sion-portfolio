@@ -137,8 +137,8 @@ export function initScene(host,onReady){
   function render(state){
     lastState=state;if(contextLost||disposed||!width)return;
     const wabi=state.theme==='wabi';garden.root.visible=wabi;lens.root.visible=!wabi;studio.root.visible=!wabi;
-    if(wabi){if(!activeWabi){activeWabi=true;scene.background=new THREE.Color(0xd9d1c0);loadWabiEnvironment();}garden.update(state.time);camera.position.set(0,0,12.5);camera.fov=35;camera.updateProjectionMatrix();renderer.render(scene,camera);host.dataset.frames=String(++renderCount);host.dataset.calls=String(renderer.info.render.calls);return;}
-    if(activeWabi){activeWabi=false;scene.background=null;}renderer.setClearColor(0x000000,0);
+    if(wabi){if(!activeWabi){activeWabi=true;scene.background=new THREE.Color(0xd9d1c0);loadWabiEnvironment();}garden.update(state.time);camera.position.set(state.mobile?2.6:0,state.mobile?-.25:0,12.5);camera.fov=35;camera.updateProjectionMatrix();renderer.render(scene,camera);host.dataset.frames=String(++renderCount);host.dataset.calls=String(renderer.info.render.calls);return;}
+    if(activeWabi){activeWabi=false;scene.background=null;camera.position.set(0,0,12.5);}renderer.setClearColor(0x000000,0);
     const viewHeight=2*Math.tan(THREE.MathUtils.degToRad(35)/2)*camera.position.z,viewWidth=viewHeight*camera.aspect;
     const baseDiameter=state.diameter??(state.mobile?Math.min(width*(height<=700?.66:.77),500):Math.min(width*.42,570));
     const scale=baseDiameter/height*viewHeight/4.44*state.scale;
