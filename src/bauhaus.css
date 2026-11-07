@@ -1,0 +1,115 @@
+.bauhaus-hero{display:none}
+html.bauhaus-theme{
+  --paper:#f4f0e7;--ink:#191b20;--orange:#b8251c;--line:#191b2050;
+  --bh-blue:#1736b9;--bh-red:#b8251c;--bh-yellow:#f6c62d;--bh-steel:#dfe1dd;
+  color:var(--ink);background:var(--paper);
+}
+.bauhaus-theme body.light-header .site-header{background:var(--paper);color:var(--ink);border-bottom:2px solid var(--ink)}
+.bauhaus-theme :is(.menu-toggle,.theme-picker select,.header-contact){border-radius:0;border-color:var(--ink)}
+.bauhaus-theme .header-contact:hover{background:var(--ink);color:var(--paper)}
+.bauhaus-theme .story{height:auto!important;background:var(--paper);color:var(--ink);border-bottom:2px solid var(--ink)}
+.bauhaus-theme :is(.story-sticky,.motion-dock,.pointer-halo){display:none}
+.bauhaus-theme .bauhaus-hero{
+  display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);align-items:center;
+  gap:clamp(24px,4vw,76px);padding-top:clamp(126px,14vh,164px);padding-bottom:clamp(42px,7vh,80px);
+}
+.bauhaus-copy{min-width:0}
+.bauhaus-index{font-size:13px;font-weight:800;margin:0 0 24px}
+.bauhaus-copy h1{font-size:clamp(92px,12vw,214px);font-weight:950;line-height:.76;letter-spacing:-.085em;margin:0 0 25px}
+.bauhaus-copy h1 span{color:var(--bh-red)}
+.bauhaus-intro{font-size:clamp(17px,1.65vw,24px);font-weight:750;line-height:1.55;margin:0 0 22px}
+.bauhaus-actions{display:flex;flex-wrap:wrap;gap:8px 12px}
+.bauhaus-actions a{display:inline-flex;align-items:center;gap:16px;min-height:46px;padding:0 14px;border:1px solid var(--ink);font-size:14px;font-weight:800}
+.bauhaus-actions a:first-child{background:var(--bh-red);color:#fff;border-color:var(--bh-red)}
+.bauhaus-actions a:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+.bauhaus-figure{margin:0;min-width:0}
+.bauhaus-art{
+  position:relative;aspect-ratio:1.23;isolation:isolate;overflow:hidden;border:2px solid var(--ink);
+  background-color:var(--bh-steel);background-image:linear-gradient(#191b2014 1px,transparent 1px),linear-gradient(90deg,#191b2014 1px,transparent 1px);background-size:32px 32px;
+}
+.bauhaus-plate{position:absolute;z-index:3;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none;font-size:13px;font-weight:900}
+.bauhaus-plate span:first-child{background:var(--bh-blue);color:#fff;padding:10px 14px}
+.bauhaus-plate span:last-child{background:var(--bh-yellow);padding:10px 14px}
+.bauhaus-poster{position:absolute;inset:0;width:100%;height:100%}
+.bauhaus-art:has(.scene-ready) .bauhaus-poster{visibility:hidden}
+.bauhaus-poster :is(.poster-wheel,.poster-cap){transition:transform .38s ease}
+.bauhaus-art[data-exploded=true] .poster-wheel{transform:translateY(-58px)}
+.bauhaus-art[data-exploded=true] .poster-cap{transform:translate(80px,-28px)}
+.bauhaus-theme .bauhaus-art .world-stage{display:block;position:absolute;height:auto}
+.bauhaus-art .scene-host{opacity:1!important}
+.bauhaus-art .world-stage :is(.workbench,.signal-field,.scene-fallback){display:none}
+.bauhaus-figure figcaption{display:flex;flex-wrap:wrap;align-items:center;gap:0;background:var(--ink);color:#fff}
+.bauhaus-figure figcaption > span{flex:1 0 auto;padding:12px;font-size:13px}
+.bauhaus-figure button{min-height:44px;padding:0 12px;font-size:13px;font-weight:750;border-left:1px solid #ffffff70}
+.bauhaus-figure button:first-of-type{background:var(--bh-yellow);color:var(--ink)}
+.bauhaus-figure button:hover:not(:disabled){background:#fff;color:var(--ink)}
+.bauhaus-figure button:disabled{opacity:.72;cursor:default}
+.bauhaus-figure button:focus-visible{outline-offset:-4px}
+
+.bauhaus-theme :is(.work-section,.about-section,.experience-section){background:var(--paper);color:var(--ink)}
+.bauhaus-theme :is(.impact-section,.projects-section){background:var(--ink);color:var(--paper);--line:#f4f0e755}
+.bauhaus-theme .process-section{height:auto;background:var(--bh-yellow);color:var(--ink)}
+.bauhaus-theme .contact-section{background:var(--bh-blue);color:#fff}
+.bauhaus-theme :is(.site-footer,.sources-section){background:var(--ink);color:var(--paper)}
+.bauhaus-theme .display-title{font-size:clamp(52px,10vw,156px);line-height:.87}
+.bauhaus-theme :is(.kinetic-line,.about-photo,.timeline-entry){transform:none}
+.bauhaus-theme .timeline-entry{opacity:1}
+.bauhaus-theme .kinetic-line{overflow-wrap:anywhere}
+.bauhaus-theme .work-scroll .creative-case{border-top:2px solid var(--ink)}
+.bauhaus-theme .work-scroll .creative-image-button{box-shadow:none;border:2px solid var(--ink)}
+.bauhaus-theme .case-number{color:var(--bh-red)}
+.bauhaus-theme :is(.case-button,.filters button,.project-store-status){border-radius:0}
+.bauhaus-theme .image-view-label{border-radius:0;background:var(--bh-yellow);color:var(--ink)}
+.bauhaus-theme .image-caption{background:var(--ink);color:#fff}
+.bauhaus-theme .craft-ticker{background:var(--bh-red);color:#fff}
+.bauhaus-theme .impact-main > strong,.bauhaus-theme .impact-arrow{color:var(--bh-yellow)}
+.bauhaus-theme .impact-orbit{display:none}
+.bauhaus-theme .process-caption{min-height:220px}
+.bauhaus-theme .process-heading > p:last-child,.bauhaus-theme .process-caption > p{display:block;font-size:16px;opacity:1}
+.bauhaus-theme :is(.process-kicker,.process-tools){display:block;color:var(--ink);font-size:12px}
+.bauhaus-theme .process-controls button{background:var(--paper);border:2px solid var(--ink);color:var(--ink)}
+.bauhaus-theme .process-controls button[aria-pressed=true]{background:var(--bh-blue);color:#fff}
+.bauhaus-theme .project-atlas{background:var(--bh-blue);border:0}
+.bauhaus-theme :is(.atlas-heading h3,.atlas-heading > span,.atlas-note,.atlas-nodes button small){color:#fff}
+.bauhaus-theme .atlas-nodes button{background:var(--ink);border:0}
+.bauhaus-theme .atlas-nodes button:hover{background:#343747}
+.bauhaus-theme .atlas-nodes button > i{color:var(--bh-yellow)}
+.bauhaus-theme .atlas-nodes button:before{display:none}
+.bauhaus-theme .feature-layout{background:var(--paper);color:var(--ink)}
+.bauhaus-theme .feature-copy p{font-size:15px;line-height:1.7}
+.bauhaus-theme .feature-copy .eyebrow{color:var(--bh-red)}
+.bauhaus-theme .feature-copy .project-tags span{border-color:#191b2050}
+.bauhaus-theme .feature-image span{color:#fff}
+.bauhaus-theme .lab-tabs button[aria-pressed=true]{border-color:var(--bh-yellow)}
+.bauhaus-theme .project-row h3{overflow-wrap:anywhere}
+.bauhaus-theme .project-store-status{color:var(--bh-yellow);border-color:var(--bh-yellow)}
+.bauhaus-theme .about-photo{box-shadow:none}
+.bauhaus-theme .about-photo img{clip-path:none;transform:none}
+.bauhaus-theme .closing-ribbon{background:var(--bh-yellow);color:var(--ink)}
+
+@media(max-width:780px){
+  .bauhaus-theme .bauhaus-hero{grid-template-columns:minmax(0,1fr);gap:26px;padding-top:100px;padding-bottom:36px}
+  .bauhaus-index{margin-bottom:14px}
+  .bauhaus-copy h1{font-size:clamp(76px,16vw,120px);line-height:.91;margin-bottom:14px}
+  .bauhaus-copy h1 br{display:none}
+  .bauhaus-intro{margin-bottom:14px}
+  .bauhaus-art{aspect-ratio:1.17;background-size:24px 24px}
+  .bauhaus-figure figcaption > span{flex-basis:100%}
+  .bauhaus-figure button{flex:1;border-left:0}
+  .bauhaus-theme .process-caption{min-height:0}
+  .bauhaus-theme .process-controls button b{font-size:13px}
+  .bauhaus-theme .lab-tabs button{font-size:11px}
+  .bauhaus-theme .feature-copy{padding:22px}
+  .bauhaus-theme .project-intro p{font-size:15px}
+  .bauhaus-theme .atlas-heading h3{font-size:11px}
+  .bauhaus-theme .atlas-nodes button b{font-size:13px}
+}
+@media(max-width:420px){
+  .bauhaus-copy h1{font-size:clamp(57px,17vw,74px)}
+}
+@media(min-width:600px) and (max-width:780px){
+  .bauhaus-art{aspect-ratio:1.55}
+}
+@media(prefers-reduced-motion:reduce){
+  .bauhaus-poster :is(.poster-wheel,.poster-cap){transition:none}
+}

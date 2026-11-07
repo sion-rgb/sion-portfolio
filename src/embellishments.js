@@ -12,7 +12,7 @@ const steps=[
 export function initEmbellishments({world,schedule}){
   const process=document.createElement('section');process.id='process';process.className='process-section';process.setAttribute('aria-labelledby','process-title');
   process.innerHTML=`<div class="process-sticky section-shell">
-    <div class="process-heading"><p class="eyebrow">INSIDE THE CREATIVE PROCESS</p><h2 id="process-title">從一個想法，<br>到一個世界。</h2><p>捲動，讓創作逐步成形。<br>也可以選擇你想探索的一步。</p></div>
+    <div class="process-heading"><p class="eyebrow">INSIDE THE CREATIVE PROCESS</p><h2 id="process-title">從一個想法，<br>到一個世界。</h2><p><span class="process-scroll-instruction">捲動，讓創作逐步成形。<br>也可以選擇你想探索的一步。</span><span class="process-manual-instruction">選擇下方步驟，看看創作如何成形。</span></p></div>
     <div class="process-reticle" aria-hidden="true"><i></i><i></i><i></i><span>CREATIVE OPTICS / WORK IN MOTION</span></div>
     <div class="process-caption"><span class="process-kicker"></span><h3></h3><p></p><span class="process-tools"></span></div>
     <nav class="process-controls" aria-label="探索創作流程">${steps.map((s,i)=>`<button data-process="${i}" aria-pressed="${i===0}"><span>0${i+1}</span><b>${s.word}</b><i aria-hidden="true">${s.symbol}</i></button>`).join('')}</nav>
@@ -58,9 +58,9 @@ export function initEmbellishments({world,schedule}){
   };
   const measured=new Map(),ambient=[ticker,atlas];
   function measure(y){const r=process.getBoundingClientRect();bounds={top:r.top+y,height:r.height,stage:sticky.offsetHeight};ambient.forEach(el=>{const r=el.getBoundingClientRect();measured.set(el,{top:r.top+y,height:r.height});});box=null;}
-  function update({y,h,time,paused,reduced,phase,p}){
+  function update({y,h,time,paused,reduced,phase,p,flat}){
     const progress=clamp((y-bounds.top)/Math.max(1,bounds.height-bounds.stage));
-    const step=Math.min(3,Math.floor(progress*4));if(!document.documentElement.classList.contains('wabi-theme')){if(step!==scrollStep){scrollStep=step;manual=false;}if(!manual&&!reduced)select(step);}
+    const step=Math.min(3,Math.floor(progress*4));if(!flat){if(step!==scrollStep){scrollStep=step;manual=false;}if(!manual&&!reduced)select(step);}
     process.style.setProperty('--process-progress',String(progress));process.classList.toggle('is-inview',bounds.top<y+h&&bounds.top+bounds.height>y);
     world.dataset.phase=phase;
     world.dataset.studio=String(selected);

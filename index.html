@@ -22,13 +22,35 @@
     <a class="wordmark" href="#home" aria-label="Sion Ng 首頁">SION<span class="brand-symbol" aria-hidden="true">✳</span></a>
     <span class="header-note">CREATIVE WORKBENCH<br>HONG KONG / 2026</span>
     <nav class="desktop-nav" aria-label="主要導覽"><a href="#home">探索</a><a href="#work">作品</a><a href="#projects">實驗室</a><a href="#about">關於</a></nav>
-    <button id="theme-toggle" class="theme-toggle" type="button" aria-pressed="false" aria-label="切換至侘寂主題">侘寂主題 <span aria-hidden="true">↗</span></button>
+    <label class="theme-picker"><span>主題</span><select id="theme-toggle" aria-label="選擇作品集主題"><option value="workbench">創作工作台</option><option value="wabi">侘寂石庭</option><option value="bauhaus">包浩斯工業</option></select></label>
     <a class="header-contact" href="#contact">一起創作 ↗</a>
     <button class="menu-toggle" aria-expanded="false" aria-controls="mobile-nav" aria-label="開啟導覽選單"><span></span><span></span></button>
     <nav id="mobile-nav" class="mobile-nav" aria-label="手機導覽" hidden><a href="#home">探索工作台</a><a href="#work">創作作品</a><a href="#projects">開發實驗室</a><a href="#about">關於 Sion</a><a href="#contact">聯絡我 ↗</a></nav>
   </header>
   <main id="main">
     <section id="home" class="story" aria-label="創作工作台互動序章">
+      <div class="bauhaus-hero section-shell">
+        <div class="bauhaus-copy">
+          <p class="bauhaus-index">SION NG　/　香港　/　作品集</p>
+          <h1 aria-label="Sion Ng">SION<br> NG<span>.</span></h1>
+          <p class="bauhaus-intro">影像、設計與互動。<br>從一個想法，到一件作品。</p>
+          <div class="bauhaus-actions"><a href="#work">探索作品 <span aria-hidden="true">↓</span></a><a href="/documents/Sion_Ng_CV.pdf" target="_blank" rel="noopener">履歷 PDF <span aria-hidden="true">↗</span></a></div>
+        </div>
+        <figure class="bauhaus-figure">
+          <div class="bauhaus-art">
+            <div class="bauhaus-plate" aria-hidden="true"><span>圖 01</span><span>FORM / FUNCTION</span></div>
+            <svg class="bauhaus-poster" viewBox="0 0 600 460" aria-hidden="true">
+              <ellipse cx="306" cy="364" rx="208" ry="39" fill="#131521" opacity=".12"/>
+              <path d="M93 331 449 331 511 364 152 364Z" fill="#22252d"/><path d="M152 364h359v18H152z" fill="#121417"/>
+              <path d="M127 333V175l108-60v218Z" fill="#1638b9"/><path d="M127 175l108-60 19 10-109 61Z" fill="#4569ee"/>
+              <path d="M400 335V166l79 169Z" fill="#f4bf23"/><path d="M400 335V166l-18 9v160Z" fill="#b37a00"/>
+              <g class="poster-wheel"><circle cx="300" cy="227" r="99" fill="#981a15"/><circle cx="286" cy="216" r="99" fill="#d92820"/><circle cx="286" cy="216" r="29" fill="#c9ccd1"/><circle cx="286" cy="216" r="13" fill="#22252d"/></g>
+              <g class="poster-cap"><circle cx="343" cy="242" r="47" fill="#141619"/><circle cx="333" cy="237" r="47" fill="#a2a6ad"/><circle cx="333" cy="237" r="16" fill="#353942"/></g>
+            </svg>
+          </div>
+          <figcaption><span><strong>構件研究</strong> · 形態與功能</span><button id="bauhaus-assembly" type="button" aria-pressed="false">拆解構件 <span aria-hidden="true">＋</span></button><button id="bauhaus-motion" type="button" aria-pressed="false">暫停動態</button></figcaption>
+        </figure>
+      </div>
       <div class="story-sticky">
         <div class="workbench" aria-hidden="true"><div class="cutting-mat"></div><div class="bench-pencil"></div><div class="bench-ruler"></div><div class="bench-film"></div><div class="bench-print"><img src="/assets/studio-film.jpg" alt=""><span>SION / FRAME 001</span></div></div>
         <div id="scene-host" class="scene-host" tabindex="0" role="img" aria-label="創作鏡頭。拖曳或使用方向鍵旋轉，向下捲動可拆解鏡頭。">

@@ -3,6 +3,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 import { Reflector } from 'three/addons/objects/Reflector.js';
 import { createStudioElements } from './studio-elements.js';
+import { createBauhausAssembly } from './bauhaus-scene.js';
 
 function annulus(outer,inner,depth){
   const shape=new THREE.Shape();shape.absarc(0,0,outer,0,Math.PI*2,false);
@@ -105,8 +106,8 @@ export function initScene(host,onReady){
   catch(error){host.dataset.renderer='css-depth';host.dataset.rendererError='webgl-unavailable';return null;}
   renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.95;
   renderer.domElement.setAttribute('aria-hidden','true');host.appendChild(renderer.domElement);
-  const scene=new THREE.Scene();const camera=new THREE.PerspectiveCamera(35,1,.1,50);camera.position.set(0,0,12.5);
-  let environment,contextLost=false,disposed=false,lastState=null,width=0,height=0,renderCount=0,hdrLoading=false,activeWabi=false;
+  const scene=new THREE.Scene(),wabiBackground=new THREE.Color(0xd9d1c0);const camera=new THREE.PerspectiveCamera(35,1,.1,50);camera.position.set(0,0,12.5);
+  let environment,wabiEnvironment,bauhaus,contextLost=false,disposed=false,lastState=null,width=0,height=0,renderCount=0,hdrLoading=false;
   function rebuildEnvironment(){
     const pmrem=new THREE.PMREMGenerator(renderer),room=new RoomEnvironment();
     try{const next=pmrem.fromScene(room,.04);environment?.dispose();environment=next;scene.environment=next.texture;}
@@ -120,7 +121,7 @@ export function initScene(host,onReady){
     if(hdrLoading||host.dataset.hdri==='loaded'||host.dataset.hdri==='failed')return;
     hdrLoading=true;new RGBELoader().load(`${import.meta.env.BASE_URL}assets/wabi-studio-1k.hdr`,texture=>{
       hdrLoading=false;if(disposed){texture.dispose();return;}texture.mapping=THREE.EquirectangularReflectionMapping;const pmrem=new THREE.PMREMGenerator(renderer);
-      try{const next=pmrem.fromEquirectangular(texture);environment?.dispose();environment=next;scene.environment=next.texture;host.dataset.hdri='loaded';}
+      try{wabiEnvironment=pmrem.fromEquirectangular(texture);host.dataset.hdri='loaded';}
       catch{host.dataset.hdri='failed';}
       finally{texture.dispose();pmrem.dispose();onReady();}
     },undefined,()=>{hdrLoading=false;host.dataset.hdri='failed';onReady();});
@@ -136,9 +137,18 @@ export function initScene(host,onReady){
   }
   function render(state){
     lastState=state;if(contextLost||disposed||!width)return;
-    const wabi=state.theme==='wabi';garden.root.visible=wabi;lens.root.visible=!wabi;studio.root.visible=!wabi;
-    if(wabi){if(!activeWabi){activeWabi=true;scene.background=new THREE.Color(0xd9d1c0);loadWabiEnvironment();}garden.update(state.time);camera.position.set(state.mobile?2.6:0,state.mobile?-.25:0,12.5);camera.fov=35;camera.updateProjectionMatrix();renderer.render(scene,camera);host.dataset.frames=String(++renderCount);host.dataset.calls=String(renderer.info.render.calls);return;}
-    if(activeWabi){activeWabi=false;scene.background=null;camera.position.set(0,0,12.5);}renderer.setClearColor(0x000000,0);
+    const wabi=state.theme==='wabi',industrial=state.theme==='bauhaus';
+    if(industrial&&!bauhaus){bauhaus=createBauhausAssembly();scene.add(bauhaus.root);}
+    if(bauhaus)bauhaus.root.visible=industrial;
+    garden.root.visible=wabi;lens.root.visible=studio.root.visible=!wabi&&!industrial;
+    scene.environment=(wabi?wabiEnvironment??environment:environment).texture;
+    scene.background=wabi?wabiBackground:null;
+    camera.position.set(wabi&&state.mobile?2.6:0,wabi&&state.mobile?-.25:0,12.5);
+    if(wabi||industrial){
+      if(wabi){loadWabiEnvironment();garden.update(state.time);}
+      else bauhaus.update(state,camera.aspect);
+      renderer.render(scene,camera);host.dataset.frames=String(++renderCount);host.dataset.calls=String(renderer.info.render.calls);return;
+    }
     const viewHeight=2*Math.tan(THREE.MathUtils.degToRad(35)/2)*camera.position.z,viewWidth=viewHeight*camera.aspect;
     const baseDiameter=state.diameter??(state.mobile?Math.min(width*(height<=700?.66:.77),500):Math.min(width*.42,570));
     const scale=baseDiameter/height*viewHeight/4.44*state.scale;
@@ -156,14 +166,14 @@ export function initScene(host,onReady){
   function fallback(reason){contextLost=true;host.classList.remove('scene-ready');host.dataset.renderer='css-depth';host.dataset.rendererError=reason;onReady();}
   renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();fallback('webgl-context-lost');});
   renderer.domElement.addEventListener('webglcontextrestored',()=>{
-    if(disposed)return;try{rebuildEnvironment();contextLost=false;resize();host.classList.add('scene-ready');host.dataset.renderer='three-webgl';delete host.dataset.rendererError;onReady();}catch{fallback('webgl-restore-failed');}
+    if(disposed)return;try{rebuildEnvironment();if(wabiEnvironment){wabiEnvironment.dispose();wabiEnvironment=null;delete host.dataset.hdri;}contextLost=false;resize();host.classList.add('scene-ready');host.dataset.renderer='three-webgl';delete host.dataset.rendererError;onReady();}catch{fallback('webgl-restore-failed');}
   });
   const observer=new ResizeObserver(resize);observer.observe(host);resize();
   host.classList.add('scene-ready');host.dataset.renderer='three-webgl';host.dataset.threeRevision=THREE.REVISION;
   function dispose(){
     disposed=true;observer.disconnect();const geometries=new Set(),materials=new Set(),textures=new Set();
     scene.traverse(object=>{if(object.geometry)geometries.add(object.geometry);if(object.material){for(const mat of Array.isArray(object.material)?object.material:[object.material]){materials.add(mat);for(const value of Object.values(mat))if(value?.isTexture)textures.add(value);}}});
-    geometries.forEach(geometry=>geometry.dispose());materials.forEach(material=>material.dispose());textures.forEach(texture=>texture.dispose());environment?.dispose();renderer.dispose();
+    geometries.forEach(geometry=>geometry.dispose());materials.forEach(material=>material.dispose());textures.forEach(texture=>texture.dispose());environment?.dispose();wabiEnvironment?.dispose();renderer.dispose();
   }
   return {render,dispose};
 }

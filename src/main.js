@@ -2,6 +2,7 @@ import './style.css';
 import './journey.css';
 import './embellishments.css';
 import './wabi.css';
+import './bauhaus.css';
 import { creativeWorks, projects, experience } from './data.js';
 import { initStory } from './story.js';
 
@@ -96,15 +97,30 @@ dialog.addEventListener('close',()=>document.body.classList.remove('dialog-open'
 initStory({selectFeature:showFeature});
 
 const themeToggle=document.querySelector('#theme-toggle');
-function setTheme(wabi){
-  document.documentElement.classList.toggle('wabi-theme',wabi);
-  themeToggle.setAttribute('aria-pressed',String(wabi));
-  themeToggle.setAttribute('aria-label',wabi?'返回原本主題':'切換至侘寂主題');
-  themeToggle.innerHTML=wabi?'原本主題 <span aria-hidden="true">↗</span>':'侘寂主題 <span aria-hidden="true">↗</span>';
-  document.body.classList.toggle('light-header',wabi);
-  try{localStorage.setItem('sion-portfolio-theme',wabi?'wabi':'workbench');}catch{}
-  window.dispatchEvent(new Event('resize'));
+const themes=['workbench','wabi','bauhaus'];
+const themeKey='sion-portfolio-theme';
+function setTheme(value){
+  const theme=themes.includes(value)?value:'workbench';
+  document.documentElement.classList.toggle('wabi-theme',theme==='wabi');
+  document.documentElement.classList.toggle('bauhaus-theme',theme==='bauhaus');
+  document.querySelector('#home').setAttribute('aria-label',theme==='bauhaus'?'包浩斯工業作品集':theme==='wabi'?'侘寂石庭作品集':'創作工作台互動序章');
+  document.title='Sion Ng — '+(theme==='bauhaus'?'Bauhaus Industrial':theme==='wabi'?'Wabi-Sabi Garden':'The Creative Workbench');
+  themeToggle.value=theme;
+  document.body.classList.toggle('light-header',theme!=='workbench');
+  try{localStorage.setItem(themeKey,theme);}catch{}
   window.dispatchEvent(new Event('portfolio-theme-change'));
 }
-themeToggle.addEventListener('click',()=>setTheme(!document.documentElement.classList.contains('wabi-theme')));
-try{setTheme(localStorage.getItem('sion-portfolio-theme')==='wabi');}catch{setTheme(false);}
+themeToggle.addEventListener('change',()=>{
+  const sections=[...document.querySelectorAll('main > section[id]')];
+  const anchor=sections.findLast(section=>section.getBoundingClientRect().top<=innerHeight*.28);
+  setTheme(themeToggle.value);
+  const url=new URL(location.href);
+  url.searchParams.set('theme',themeToggle.value);
+  history.replaceState(history.state,'',url);
+  if(anchor?.id==='home')scrollTo({top:0,behavior:'instant'});
+  else anchor?.scrollIntoView({behavior:'instant'});
+});
+const linkedTheme=new URLSearchParams(location.search).get('theme');
+let savedTheme;
+try{savedTheme=localStorage.getItem(themeKey);}catch{}
+setTheme(themes.includes(linkedTheme)?linkedTheme:savedTheme);
