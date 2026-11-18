@@ -32,18 +32,19 @@
       <div class="museum-exhibition">
         <div class="museum-mast">
           <div><p class="museum-supra" lang="en">Sion Ng <i>/</i> Permanent Collection</p><h1>Sion 創作博物館</h1></div>
-          <label class="museum-index"><span>展區目錄</span><select data-museum="index" aria-label="選擇展區"></select></label>
+          <div class="museum-actions"><button type="button" data-museum="immersive" aria-expanded="false">放大展館　⛶</button><label class="museum-index"><span>展區目錄</span><select data-museum="index" aria-label="選擇展區"></select></label></div>
         </div>
-        <div class="museum-view" data-museum="view" tabindex="0" role="group" aria-label="第一身展廳，拖曳或用方向鍵環顧，Home 鍵回到正面">
+        <div class="museum-view" data-museum="view" tabindex="0" role="group" aria-label="第一身博物館。拖曳或方向鍵環顧，停站時用 WASD 步行，Home 鍵回到導賞位置。">
           <div class="museum-fallback" aria-hidden="true"><div class="museum-mount"><img data-museum="image" alt=""></div><img class="museum-guide" data-museum="rai" alt=""></div>
           <div class="museum-plate"><span>展品</span><b data-museum="caption"></b><small data-museum="credit"></small></div>
-          <span class="museum-look">拖曳環顧　⤢</span>
+          <div class="museum-position" data-museum="status" role="status">展館入口</div>
+          <div class="museum-navigation"><details data-museum="pad"><summary>自由步行</summary><div class="museum-pad" role="group" aria-label="步行方向"><button type="button" data-stride="KeyW" aria-label="向前行">↑</button><button type="button" data-stride="KeyA" aria-label="向左行">←</button><button type="button" data-stride="KeyS" aria-label="向後行">↓</button><button type="button" data-stride="KeyD" aria-label="向右行">→</button></div></details><button type="button" data-museum="centre">望返 RAI</button></div>
         </div>
         <div class="museum-desk">
           <div class="museum-room"><span class="museum-folio" data-museum="page"></span><h2 data-museum="title"></h2><i data-museum="en" lang="en"></i><a data-museum="link"></a></div>
           <div class="museum-transcript"><div class="museum-byline"><strong>RAI</strong><span>展覽導賞員</span></div><p data-museum="words" aria-live="polite"></p><div class="museum-controls"><button type="button" data-museum="listen" aria-pressed="false">▷　聽廣東話導賞</button><div><button type="button" data-museum="prev" aria-label="上一展區">←</button><button type="button" data-museum="next">下一展區　→</button></div></div><small data-museum="notice" role="status"></small></div>
         </div>
-        <p class="museum-colophon">角色 RAI <span>/</span> SION　 ·　廣東話合成語音</p>
+        <p class="museum-colophon">角色 RAI <span>/</span> SION　 ·　廣東話合成語音　 ·　拖曳環顧，停站時可用 WASD 步行</p>
       </div>
       <div class="bauhaus-hero section-shell">
         <div class="bauhaus-copy">

@@ -1,270 +1,387 @@
 import * as T from 'three';
-import mouthCues from './museum-mouth.json';
-import { museumStops } from './museum-stops.js';
+import { buildHall, gap, sideOf } from './museum-hall.js';
+import { loadGuide } from './museum-guide.js';
 
-const assets = import.meta.env.BASE_URL + 'assets/';
-const spacing = 5.8;
-function inscription(text) {
-  const c = document.createElement('canvas');
-  c.width = 1024;
-  c.height = 256;
-  const ctx = c.getContext('2d');
-  ctx.fillStyle = '#463e30';
-  ctx.font = 'italic 95px Georgia';
-  ctx.fillText(text, 18, 120, 979);
-  ctx.fillRect(22, 153, 95, 3);
-  ctx.font = '27px Arial';
-  ctx.fillText('S I O N   N G     /     C O L L E C T I O N', 22, 212);
-  const map = new T.CanvasTexture(c);
-  map.colorSpace = T.SRGBColorSpace;
-  return new T.MeshBasicMaterial({ map, transparent: true, depthWrite: false });
+const eye = 1.55;
+const vector = (x, y, z) => new T.Vector3(x, y, z);
+const ease = (t) => t * t * (3 - 2 * t);
+function bearing(from, to) {
+  return Math.atan2(to.x - from.x, to.z - from.z);
+}
+function turn(current, target, amount) {
+  return current + Math.atan2(Math.sin(target - current), Math.cos(target - current)) * amount;
+}
+function stopPose(i) {
+  const side = sideOf(i),
+    z = -i * gap;
+  return {
+    guide: vector(side * 2.48, 0, z + 1.77),
+    visitor: vector(-side * 0.72, eye, z + 2.19),
+    art: vector(side * 4.21, 1.86, z),
+    attention: vector(side * 3.22, 1.39, z + 0.84)
+  };
 }
 
-export function createMuseumScene(host, narration) {
-  const renderer = new T.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'low-power' });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.65));
-  renderer.setClearColor(0xcac1ab);
-  renderer.domElement.setAttribute('aria-hidden', 'true');
-  host.append(renderer.domElement);
-  const scene = new T.Scene(),
-    camera = new T.PerspectiveCamera(37, 1, 0.04, 60);
-  scene.fog = new T.FogExp2(0xd2c9b6, 0.023);
-  const loader = new T.TextureLoader(),
-    unit = new T.BoxGeometry(),
-    plane = new T.PlaneGeometry();
-  const material = (color) => new T.MeshStandardMaterial({ color, roughness: 0.83 });
-  const wood = material('#584531'),
-    brass = material('#8c704b'),
-    mat = material('#f2ebdb');
-  const box = (parent, x, y, z, w, h, d, m) => {
-    const mesh = new T.Mesh(unit, m);
-    mesh.position.set(x, y, z);
-    mesh.scale.set(w, h, d);
-    parent.add(mesh);
-    return mesh;
-  };
-  scene.add(new T.HemisphereLight(0xfff8e6, 0xdfcebb, 1.65));
-  const sun = new T.DirectionalLight(0xffebc1, 2.1);
-  sun.position.set(-3, 5.9, 2.3);
-  scene.add(sun);
-  const background = loader.load(assets + 'museum/gallery.webp', invalidate);
-  background.colorSpace = T.SRGBColorSpace;
-  scene.background = background;
-  const architecture = new T.MeshBasicMaterial({ map: background });
-  const bays = museumStops.map((stop, i) => {
-    const g = new T.Group();
-    g.position.x = i * spacing;
-    scene.add(g);
-    const room = new T.Mesh(plane, architecture);
-    room.position.set(0, 1.54, -2.18);
-    room.scale.set(spacing + 0.005, 3.86, 1);
-    g.add(room);
-    const label = new T.Mesh(plane, inscription(stop.english));
-    label.position.set(0.73, 2.74, -2.15);
-    label.scale.set(1.73, 0.43, 1);
-    g.add(label);
-    // Every exhibit retains the original image's aspect ratio inside its mount.
-    const photo = new T.Mesh(plane, new T.MeshBasicMaterial({ color: '#dfd5c0' }));
-    photo.position.set(0.64, 1.64, -1.904);
-    g.add(photo);
-    const mount = box(g, 0.64, 1.64, -1.945, 2, 1.44, 0.072, mat);
-    const frame = box(g, 0.64, 1.64, -2.006, 2.07, 1.51, 0.12, wood);
-    box(g, 1.92, 1.27, -2.106, 0.32, 0.14, 0.035, mat);
-    for (let n = 0; n < 3; n++)
-      box(g, 1.89, 1.3 - n * 0.026, -2.084, 0.18 - n * 0.027, 0.005, 0.007, brass);
-    return { g, room, photo, frame, mount, loaded: false };
+export async function createMuseumScene(host, audio, onArrive, onStatus, onUnavailable, onRestore) {
+  const renderer = new T.WebGLRenderer({
+    antialias: true,
+    alpha: false,
+    powerPreference: 'high-performance'
   });
-
-  const textures = new Map();
-  function guideMap(pose, state) {
-    const key = pose + '-' + state;
-    if (!textures.has(key)) {
-      const tex = loader.load(assets + 'museum/' + key + '.webp', invalidate);
-      tex.colorSpace = T.SRGBColorSpace;
-      textures.set(key, tex);
-    }
-    return textures.get(key);
-  }
-  const portrait = new T.Sprite(new T.SpriteMaterial({ transparent: true, depthWrite: false }));
-  portrait.scale.set(1.36, 2.09, 1);
-  scene.add(portrait);
-  const shadowCanvas = document.createElement('canvas');
-  shadowCanvas.width = shadowCanvas.height = 128;
-  const ctx = shadowCanvas.getContext('2d'),
-    grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
-  grad.addColorStop(0, 'rgba(42,31,22,.42)');
-  grad.addColorStop(0.46, 'rgba(42,31,22,.22)');
-  grad.addColorStop(1, 'rgba(42,31,22,0)');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 128, 128);
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.55));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = T.PCFSoftShadowMap;
+  renderer.toneMapping = T.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.03;
+  const canvas = renderer.domElement;
+  canvas.setAttribute('aria-hidden', 'true');
+  host.prepend(canvas);
+  const scene = new T.Scene(),
+    camera = new T.PerspectiveCamera(53, 1, 0.05, 96);
+  camera.rotation.order = 'YXZ';
+  const guide = new T.Group();
+  scene.add(guide);
+  const contact = document.createElement('canvas');
+  contact.width = contact.height = 96;
+  const ink = contact.getContext('2d'),
+    gradient = ink.createRadialGradient(48, 48, 0, 48, 48, 47);
+  gradient.addColorStop(0, 'rgba(38,29,22,.52)');
+  gradient.addColorStop(0.47, 'rgba(48,35,24,.25)');
+  gradient.addColorStop(1, 'rgba(48,35,24,0)');
+  ink.fillStyle = gradient;
+  ink.fillRect(0, 0, 96, 96);
   const shadow = new T.Mesh(
-    plane,
-    new T.MeshBasicMaterial({
-      map: new T.CanvasTexture(shadowCanvas),
-      transparent: true,
-      depthWrite: false
-    })
+    new T.PlaneGeometry(0.9, 0.52),
+    new T.MeshBasicMaterial({ map: new T.CanvasTexture(contact), transparent: true, depthWrite: false })
   );
   shadow.rotation.x = -Math.PI / 2;
-  shadow.scale.set(0.97, 0.53, 1);
-  scene.add(shadow);
-
-  let index = 0,
-    position = 0,
-    yaw = 0,
-    pitch = 0,
+  shadow.position.y = 0.009;
+  guide.add(shadow);
+  guide.position.set(-0.42, 0, 3.76);
+  camera.position.set(0, eye, 6.25);
+  let attention = vector(-0.22, 1.26, 3.3);
+  camera.lookAt(attention);
+  let viewYaw = camera.rotation.y,
+    viewPitch = camera.rotation.x;
+  let entered = false,
+    index = 0,
+    route = null,
     active = false,
-    frameId = 0,
-    stamp = 0,
-    visible = true;
-  let drag = null,
-    clock = 0,
-    dirty = true;
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  function invalidate() {
-    dirty = true;
-    if (active && visible && !document.hidden && !frameId) frameId = requestAnimationFrame(draw);
+    visible = true,
+    paused = false,
+    lost = false;
+  let frame = 0,
+    last = 0,
+    yawOffset = 0,
+    pitchOffset = 0,
+    drag,
+    ready = false;
+  const keys = new Set(),
+    reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  function schedule() {
+    if (ready && active && visible && !document.hidden && !lost && !frame)
+      frame = requestAnimationFrame(draw);
   }
-  function draw(now) {
-    frameId = 0;
-    if (!active || !visible || document.hidden) return;
-    if (!dirty && !reduced.matches && now - stamp < 1000 / 30) {
-      frameId = requestAnimationFrame(draw);
+  buildHall(scene, renderer, schedule);
+  const observer = new ResizeObserver(() => {
+    if (host.clientWidth && host.clientHeight) {
+      renderer.setSize(host.clientWidth, host.clientHeight, false);
+      camera.aspect = host.clientWidth / host.clientHeight;
+      camera.fov = camera.aspect < 1.1 ? 69 : 53;
+      camera.updateProjectionMatrix();
+      schedule();
+    }
+  });
+  observer.observe(host);
+  let animate;
+  try {
+    animate = await loadGuide(guide, (event) =>
+      onStatus(
+        event.total
+          ? '載入 RAI　' + Math.min(99, Math.round((event.loaded / event.total) * 100)) + '%'
+          : '載入 RAI 模型…'
+      )
+    );
+  } catch (error) {
+    observer.disconnect();
+    renderer.dispose();
+    canvas.remove();
+    throw error;
+  }
+  function lookAt(to, dt, immediate) {
+    const delta = to.clone().sub(camera.position);
+    const yaw = Math.atan2(-delta.x, -delta.z),
+      pitch = Math.atan2(delta.y, Math.hypot(delta.x, delta.z));
+    const amount = immediate ? 1 : 1 - Math.exp(-5 * dt);
+    viewYaw = turn(viewYaw, yaw, amount);
+    viewPitch = T.MathUtils.lerp(viewPitch, pitch, amount);
+    camera.rotation.set(viewPitch + pitchOffset, viewYaw + yawOffset, 0, 'YXZ');
+  }
+  function finish(i) {
+    index = i;
+    entered = true;
+    route = null;
+    const end = stopPose(i);
+    guide.position.copy(end.guide);
+    camera.position.copy(end.visitor);
+    attention.copy(end.attention);
+    if (reduced.matches) {
+      guide.rotation.y = bearing(guide.position, camera.position);
+      lookAt(attention, 0, true);
+    }
+    host.dataset.tourState = 'exhibit';
+    host.dataset.station = String(i);
+    onArrive(i);
+  }
+  function travel(i, cueDuration) {
+    if (entered && index === i && !route) {
+      recenter();
+      onArrive(i);
       return;
     }
-    const dt = Math.min(0.075, (now - (stamp || now)) / 1000);
-    stamp = now;
-    clock += dt;
-    const target = index * spacing;
-    position = reduced.matches ? target : T.MathUtils.damp(position, target, 6.5, dt);
-    if (Math.abs(position - target) < 0.002) position = target;
-    const aspect = host.clientWidth / Math.max(1, host.clientHeight);
-    const near = aspect < 1.38;
-    const center = position + (near ? -0.05 : 0);
-    camera.position.set(center, 1.53, near ? 3.8 : 3.32);
-    camera.lookAt(center + yaw, 1.48 + pitch, -1);
-    camera.fov = near ? 42 : 36;
-    camera.aspect = aspect;
-    camera.updateProjectionMatrix();
-
-    bays.forEach(({ g, room }, i) => {
-      g.visible = Math.abs(position / spacing - i) < 1.6;
-      room.scale.y = near ? 5.8 : 4.55;
-    });
-    const anim = !reduced.matches;
-    const pose = museumStops[index].pose;
-    const face =
-      anim && !narration.paused && mouthCues[index][Math.floor(narration.currentTime * 16)] === '1'
-        ? 'talk'
-        : anim && clock % 4.23 < 0.13
-          ? 'blink'
-          : 'idle';
-    const tex = guideMap(pose, face);
-    if (portrait.material.map !== tex && tex.image) {
-      portrait.material.map = tex;
-      portrait.material.needsUpdate = true;
-      dirty = true;
+    const dest = stopPose(i),
+      from = guide.position.clone();
+    const distance = Math.abs(dest.guide.z - from.z);
+    const controls = [from];
+    if (distance > 2.5) {
+      controls.push(
+        vector(from.x * 0.48, 0, T.MathUtils.lerp(from.z, dest.guide.z, 0.27)),
+        vector(dest.guide.x * 0.26, 0, T.MathUtils.lerp(from.z, dest.guide.z, 0.71))
+      );
     }
-    portrait.visible = Boolean(portrait.material.map);
-    portrait.position.set(
-      position - (near ? 0.63 : 0.89),
-      1.045 + (anim ? 0.007 * Math.sin(clock * 1.7) : 0),
-      0.11
-    );
-    shadow.position.set(portrait.position.x, 0.009, 0.11);
-    if (dirty || anim) {
-      renderer.render(scene, camera);
-      dirty = false;
-    }
-    if (anim) frameId = requestAnimationFrame(draw);
-  }
-  function select(i) {
-    if (Math.abs(i - index) > 1 || !active) position = i * spacing;
+    controls.push(dest.guide);
+    const path = new T.CatmullRomCurve3(controls),
+      length = path.getLength();
     index = i;
-    yaw = pitch = 0;
-    const { pose } = museumStops[i];
-    ['idle', 'talk', 'blink'].forEach((s) => guideMap(pose, s));
-    bays.forEach((bay, j) => {
-      if (Math.abs(j - i) > 1 || bay.loaded) return;
-      bay.loaded = true;
-      const texture = loader.load(assets + museumStops[j].image, () => {
-        const ratio = texture.image.width / texture.image.height;
-        const w = Math.min(2.06, 1.4 * ratio),
-          h = w / ratio;
-        bay.photo.scale.set(w, h, 1);
-        bay.photo.material.map = texture;
-        bay.photo.material.color.set(0xffffff);
-        bay.photo.material.needsUpdate = true;
-        bay.mount.scale.set(w + 0.17, h + 0.17, 0.072);
-        bay.frame.scale.set(w + 0.23, h + 0.23, 0.12);
-        invalidate();
-      });
-      texture.colorSpace = T.SRGBColorSpace;
-    });
-    invalidate();
+    paused = false;
+    yawOffset = pitchOffset = 0;
+    keys.clear();
+    // The visitor follows the same footprints, then takes a viewing position beside the guide.
+    route = {
+      path,
+      length,
+      duration: Math.max(length / 1.52, cueDuration + 0.12),
+      progress: 0,
+      origin: camera.position.clone(),
+      dest
+    };
+    host.dataset.tourState = 'walking';
+    if (reduced.matches || length < 0.035) finish(i);
+    schedule();
   }
-  new ResizeObserver(() => {
-    if (host.clientWidth) {
-      renderer.setSize(host.clientWidth, host.clientHeight, false);
-      invalidate();
+  function recenter() {
+    yawOffset = pitchOffset = 0;
+    if (!route) {
+      if (entered) {
+        const dest = stopPose(index);
+        camera.position.copy(dest.visitor);
+        attention.copy(dest.attention);
+      } else {
+        camera.position.set(0, eye, 6.25);
+        attention.set(-0.22, 1.26, 3.3);
+      }
+      lookAt(attention, 0, true);
     }
-  }).observe(host);
-  new IntersectionObserver(([entry]) => {
-    visible = entry.isIntersecting;
-    stamp = 0;
-    invalidate();
-  }).observe(host);
-  document.addEventListener('visibilitychange', () => {
-    stamp = 0;
-    invalidate();
-  });
-  reduced.addEventListener('change', invalidate);
+    schedule();
+  }
+  function stepRoute(dt) {
+    const r = route,
+      old = guide.position.clone();
+    r.progress = Math.min(1, r.progress + dt / r.duration);
+    const p = r.progress,
+      loc = r.path.getPointAt(p),
+      direction = r.path.getTangentAt(p);
+    guide.position.copy(loc);
+    guide.rotation.y = turn(
+      guide.rotation.y,
+      Math.atan2(direction.x, direction.z),
+      1 - Math.exp(-7.5 * dt)
+    );
+    const distance = p * r.length,
+      trail = r.path.getPointAt(Math.max(0, p - 2.25 / r.length));
+    trail.y = eye;
+    camera.position.copy(r.origin).lerp(trail, ease(Math.min(1, distance / 2.25)));
+    const arrival = ease(T.MathUtils.clamp((distance - r.length + 2.6) / Math.min(r.length, 2.6), 0, 1));
+    camera.position.lerp(r.dest.visitor, arrival);
+    attention.copy(loc).addScaledVector(direction, 0.29);
+    attention.y = 1.39;
+    attention.lerp(r.dest.attention, arrival);
+    const meters = old.distanceTo(loc);
+    if (p >= 1) finish(index);
+    return meters;
+  }
+  function manualStep(dt) {
+    const fw = Number(keys.has('KeyW')) - Number(keys.has('KeyS'));
+    const strafe = Number(keys.has('KeyD')) - Number(keys.has('KeyA'));
+    if (!fw && !strafe) return;
+    const angle = viewYaw + yawOffset,
+      amount = (1.8 * dt) / Math.max(1, Math.hypot(fw, strafe));
+    camera.position.x = T.MathUtils.clamp(
+      camera.position.x + (-fw * Math.sin(angle) + strafe * Math.cos(angle)) * amount,
+      -3.05,
+      3.05
+    );
+    camera.position.z = T.MathUtils.clamp(
+      camera.position.z + (-fw * Math.cos(angle) - strafe * Math.sin(angle)) * amount,
+      -47.5,
+      8.55
+    );
+    const dx = camera.position.x - guide.position.x,
+      dz = camera.position.z - guide.position.z;
+    const sep = Math.hypot(dx, dz);
+    if (sep < 0.54 && sep > 0.0001) {
+      camera.position.x = guide.position.x + (dx * 0.54) / sep;
+      camera.position.z = guide.position.z + (dz * 0.54) / sep;
+    }
+    // Preserve the user's heading while walking around an exhibit.
+    attention.set(
+      camera.position.x - Math.sin(viewYaw) * 4,
+      eye + Math.tan(viewPitch) * 4,
+      camera.position.z - Math.cos(viewYaw) * 4
+    );
+  }
+  function draw(now) {
+    frame = 0;
+    if (!active || !visible || document.hidden || lost) return;
+    const dt = Math.min(0.15, last ? (now - last) / 1000 : 1 / 60);
+    if (last && now - last < 1000 / 32) {
+      schedule();
+      return;
+    }
+    last = now;
+    let meters = 0;
+    if (!paused) {
+      if (route) {
+        if (reduced.matches) finish(index);
+        else meters = stepRoute(dt);
+      } else manualStep(dt);
+    }
+    const end = stopPose(index);
+    const toArt = bearing(guide.position, end.art),
+      toVisitor = bearing(guide.position, camera.position);
+    const side = Math.sin(toArt - guide.rotation.y) >= 0 ? 1 : -1;
+    if (!route && !paused) {
+      const target = entered
+        ? turn(toVisitor, toArt, audio.paused ? 0.09 : 0.17 + 0.12 * Math.sin(audio.currentTime * 0.89))
+        : toVisitor;
+      guide.rotation.y = turn(guide.rotation.y, target, reduced.matches ? 1 : 1 - Math.exp(-4.9 * dt));
+    }
+    lookAt(attention, dt, false);
+    animate({
+      dt: paused ? 0 : dt,
+      meters,
+      walking: Boolean(route),
+      index,
+      audio,
+      welcome: !entered && !route,
+      turnToArt: side,
+      reduced: reduced.matches
+    });
+    renderer.render(scene, camera);
+    // These coordinates also make physical travel inspectable without a debug overlay.
+    host.dataset.guidePosition = guide.position
+      .toArray()
+      .map((x) => x.toFixed(2))
+      .join(',');
+    host.dataset.visitorPosition = camera.position
+      .toArray()
+      .map((x) => x.toFixed(2))
+      .join(',');
+    if (!paused && (!reduced.matches || route || keys.size || !audio.paused)) schedule();
+  }
   host.addEventListener('pointerdown', (e) => {
-    if (e.button === 0) {
-      drag = { x: e.clientX, y: e.clientY, yaw, pitch };
+    if (e.button === 0 && e.target === canvas) {
+      drag = [e.clientX, e.clientY, yawOffset, pitchOffset];
       host.setPointerCapture(e.pointerId);
+      host.focus({ preventScroll: true });
     }
   });
   host.addEventListener('pointermove', (e) => {
-    if (drag) {
-      yaw = T.MathUtils.clamp(drag.yaw - (e.clientX - drag.x) * 0.006, -1.15, 1.15);
-      pitch = T.MathUtils.clamp(drag.pitch + (e.clientY - drag.y) * 0.004, -0.44, 0.44);
-      invalidate();
-    }
+    if (!drag) return;
+    yawOffset = drag[2] - (e.clientX - drag[0]) * 0.005;
+    pitchOffset = T.MathUtils.clamp(drag[3] - (e.clientY - drag[1]) * 0.004, -0.72, 0.72);
+    schedule();
   });
   host.addEventListener('lostpointercapture', () => {
     drag = null;
   });
   host.addEventListener('keydown', (e) => {
-    if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home'].includes(e.key)) return;
-    e.preventDefault();
-    if (e.key === 'Home') yaw = pitch = 0;
-    else {
-      yaw = T.MathUtils.clamp(yaw + ({ ArrowLeft: -0.16, ArrowRight: 0.16 }[e.key] || 0), -1.15, 1.15);
-      pitch = T.MathUtils.clamp(pitch + ({ ArrowUp: 0.1, ArrowDown: -0.1 }[e.key] || 0), -0.44, 0.44);
+    if (e.target !== host) return;
+    if (['KeyW', 'KeyS', 'KeyA', 'KeyD'].includes(e.code)) {
+      e.preventDefault();
+      keys.add(e.code);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      recenter();
+    } else if (e.key.startsWith('Arrow')) {
+      e.preventDefault();
+      yawOffset += { ArrowLeft: 0.16, ArrowRight: -0.16 }[e.key] || 0;
+      pitchOffset = T.MathUtils.clamp(
+        pitchOffset + ({ ArrowUp: 0.1, ArrowDown: -0.1 }[e.key] || 0),
+        -0.72,
+        0.72
+      );
     }
-    invalidate();
+    schedule();
   });
-  renderer.domElement.addEventListener('webglcontextlost', (e) => {
+  window.addEventListener('keyup', (e) => keys.delete(e.code));
+  host.addEventListener('blur', () => keys.clear());
+  audio.addEventListener('playing', schedule);
+  reduced.addEventListener('change', schedule);
+  new IntersectionObserver(([e]) => {
+    visible = e.isIntersecting;
+    last = 0;
+    if (!visible) keys.clear();
+    schedule();
+  }).observe(host);
+  document.addEventListener('visibilitychange', () => {
+    last = 0;
+    keys.clear();
+    schedule();
+  });
+  canvas.addEventListener('webglcontextlost', (e) => {
     e.preventDefault();
+    lost = true;
     host.classList.remove('museum-ready');
-    active = false;
-    cancelAnimationFrame(frameId);
-    frameId = 0;
+    onUnavailable();
   });
-  renderer.domElement.addEventListener('webglcontextrestored', () => {
+  canvas.addEventListener('webglcontextrestored', () => {
+    lost = false;
     host.classList.add('museum-ready');
-    active = document.documentElement.classList.contains('museum-theme');
-    invalidate();
+    last = 0;
+    onRestore();
+    schedule();
   });
-  select(0);
+  guide.rotation.y = bearing(guide.position, camera.position);
   host.classList.add('museum-ready');
+  host.dataset.tourState = 'entrance';
+  ready = true;
   return {
-    select,
-    setActive(value) {
-      active = value;
-      stamp = 0;
-      invalidate();
+    travel,
+    recenter,
+    stride(code, down) {
+      if (down) keys.add(code);
+      else keys.delete(code);
+      schedule();
+    },
+    nudge(code) {
+      if (!route) {
+        keys.add(code);
+        manualStep(0.18);
+        keys.delete(code);
+        schedule();
+      }
+    },
+    setPaused(on) {
+      paused = on;
+      last = 0;
+      schedule();
+    },
+    setActive(on) {
+      active = on;
+      last = 0;
+      keys.clear();
+      schedule();
     }
   };
 }
