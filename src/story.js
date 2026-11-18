@@ -85,7 +85,7 @@ export function initStory({selectFeature}){
   function render(now){
     frame=0;if(disposed||document.hidden)return;if(dirty)measure();
     const y=scrollY,h=innerHeight,w=innerWidth,mobile=w<=780,reduce=reduced.matches;
-    const theme=root.classList.contains('bauhaus-theme')?'bauhaus':root.classList.contains('wabi-theme')?'wabi':'workbench',flat=theme!=='workbench';
+    const theme=root.classList.contains('museum-theme')?'museum':root.classList.contains('bauhaus-theme')?'bauhaus':root.classList.contains('wabi-theme')?'wabi':'workbench',flat=theme!=='workbench';
     const dt=lastFrame?Math.min((now-lastFrame)/1000,.04):0;lastFrame=now;if(!paused&&!dragging)time+=dt;
     const storyBounds=positions.get(story),p=flat?0:clamp((y-storyBounds.top)/Math.max(1,storyBounds.height-stageHeight))*3;
     const chapter=Math.round(p);
@@ -126,7 +126,7 @@ export function initStory({selectFeature}){
     host.style.opacity=String(opacity);
     world.style.setProperty('--lens-x',`${state.centerX*100}%`);world.style.setProperty('--lens-y',`${state.centerY*100}%`);world.style.setProperty('--lens-size',`${state.diameter}px`);
     world.style.setProperty('--scene-tilt',`${state.rx*180/Math.PI}deg`);world.style.setProperty('--scene-turn',`${state.ry*180/Math.PI}deg`);world.style.setProperty('--scene-scale',String(state.scale));world.style.setProperty('--explode',String(state.explode));world.style.setProperty('--scene-y',`${Math.sin(time*.4)*3}px`);
-    if(!reduce||flat)graphics?.render(state);
+    if(theme!=='museum'&&(!reduce||flat))graphics?.render(state);
 
     const wb=positions.get(workScroll),wp=clamp((y-wb.top)/Math.max(1,wb.height-workHeight));
     const wi=Math.min(3,Math.floor(wp*4));setCase(wi,flat);
@@ -149,10 +149,10 @@ export function initStory({selectFeature}){
     impact.classList.toggle('is-inview',positions.get(impact).top<y+h&&positions.get(impact).top+positions.get(impact).height>y);
     ribbon.classList.toggle('is-inview',positions.get(ribbon).top<y+h);
     if(metricStart===null&&positions.get(impact).top<y+h*.8)metricStart=time;
-    if(metricStart!==null){const progress=reduce||paused||metricDone?1:ease(clamp((time-metricStart)/1.4));if(progress===1)metricDone=true;metrics.forEach(item=>{const value=`${item.prefix}${(item.value*progress).toFixed(1)}${item.suffix}`;if(item.last!==value){item.visual.innerHTML=value;item.last=value;}});}
+    if(metricStart!==null){const progress=reduce||paused||metricDone||theme==='museum'?1:ease(clamp((time-metricStart)/1.4));if(progress===1)metricDone=true;metrics.forEach(item=>{const value=`${item.prefix}${(item.value*progress).toFixed(1)}${item.suffix}`;if(item.last!==value){item.visual.innerHTML=value;item.last=value;}});}
     const current=phase==='home'?'home':['work','impact','process'].includes(phase)?'work':phase==='projects'?'projects':['about','experience'].includes(phase)?'about':'contact';
     document.body.classList.toggle('light-header',flat||['work','about','experience'].includes(phase));navigation.forEach(link=>link.classList.toggle('current',link.hash===`#${current}`));
-    if(!paused&&(!flat||y<storyBounds.top+storyBounds.height))frame=requestAnimationFrame(render);
+    if(!paused&&theme!=='museum'&&(!flat||y<storyBounds.top+storyBounds.height))frame=requestAnimationFrame(render);
   }
   function schedule(){if(!frame&&!disposed&&!document.hidden)frame=requestAnimationFrame(render);}
   window.addEventListener('scroll',schedule,{passive:true});window.addEventListener('resize',()=>{dirty=true;schedule();},{passive:true});
@@ -178,8 +178,7 @@ export function initStory({selectFeature}){
   ['pointerup','pointercancel','lostpointercapture'].forEach(name=>input.addEventListener(name,release));window.addEventListener('blur',release);
   input.addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(event.key))return;event.preventDefault();if(event.key==='ArrowLeft')turn-=.18;if(event.key==='ArrowRight')turn+=.18;if(event.key==='ArrowUp')tilt=clamp(tilt-.12,-.65,.65);if(event.key==='ArrowDown')tilt=clamp(tilt+.12,-.65,.65);schedule();});
   window.addEventListener('pointermove',event=>{pointerX=event.clientX/innerWidth-.5;pointerY=event.clientY/innerHeight-.5;effects.pointerMove(event);schedule();},{passive:true});
-  function loadGraphics(){if(graphics||loadingGraphics||reduced.matches&&!root.matches('.wabi-theme,.bauhaus-theme')||disposed)return;loadingGraphics=true;import('./scene.js').then(({initScene})=>{if(!disposed){graphics=initScene(host,schedule);schedule();}}).catch(error=>{host.dataset.renderer='css-depth';host.dataset.rendererError=String(error?.message??error);}).finally(()=>{loadingGraphics=false;});}
-  loadGraphics();
+  function loadGraphics(){if(graphics||loadingGraphics||root.classList.contains('museum-theme')||reduced.matches&&!root.matches('.wabi-theme,.bauhaus-theme')||disposed)return;loadingGraphics=true;import('./scene.js').then(({initScene})=>{if(!disposed){graphics=initScene(host,schedule);schedule();}}).catch(error=>{host.dataset.renderer='css-depth';host.dataset.rendererError=String(error?.message??error);}).finally(()=>{loadingGraphics=false;});}
   window.addEventListener('portfolio-theme-change',()=>{
     if(root.classList.contains('bauhaus-theme'))art.prepend(world);
     else if(world.parentElement!==document.body)document.body.prepend(world);

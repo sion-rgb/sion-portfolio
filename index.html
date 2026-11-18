@@ -22,13 +22,29 @@
     <a class="wordmark" href="#home" aria-label="Sion Ng 首頁">SION<span class="brand-symbol" aria-hidden="true">✳</span></a>
     <span class="header-note">CREATIVE WORKBENCH<br>HONG KONG / 2026</span>
     <nav class="desktop-nav" aria-label="主要導覽"><a href="#home">探索</a><a href="#work">作品</a><a href="#projects">實驗室</a><a href="#about">關於</a></nav>
-    <label class="theme-picker"><span>主題</span><select id="theme-toggle" aria-label="選擇作品集主題"><option value="workbench">創作工作台</option><option value="wabi">侘寂石庭</option><option value="bauhaus">包浩斯工業</option></select></label>
+    <label class="theme-picker"><span>主題</span><select id="theme-toggle" aria-label="選擇作品集主題"><option value="workbench">創作工作台</option><option value="wabi">侘寂石庭</option><option value="bauhaus">包浩斯工業</option><option value="museum">RAI 創作博物館</option></select></label>
     <a class="header-contact" href="#contact">一起創作 ↗</a>
     <button class="menu-toggle" aria-expanded="false" aria-controls="mobile-nav" aria-label="開啟導覽選單"><span></span><span></span></button>
     <nav id="mobile-nav" class="mobile-nav" aria-label="手機導覽" hidden><a href="#home">探索工作台</a><a href="#work">創作作品</a><a href="#projects">開發實驗室</a><a href="#about">關於 Sion</a><a href="#contact">聯絡我 ↗</a></nav>
   </header>
   <main id="main">
     <section id="home" class="story" aria-label="創作工作台互動序章">
+      <div class="museum-exhibition">
+        <div class="museum-mast">
+          <div><p class="museum-supra" lang="en">Sion Ng <i>/</i> Permanent Collection</p><h1>Sion 創作博物館</h1></div>
+          <label class="museum-index"><span>展區目錄</span><select data-museum="index" aria-label="選擇展區"></select></label>
+        </div>
+        <div class="museum-view" data-museum="view" tabindex="0" role="group" aria-label="第一身展廳，拖曳或用方向鍵環顧，Home 鍵回到正面">
+          <div class="museum-fallback" aria-hidden="true"><div class="museum-mount"><img data-museum="image" alt=""></div><img class="museum-guide" data-museum="rai" alt=""></div>
+          <div class="museum-plate"><span>展品</span><b data-museum="caption"></b><small data-museum="credit"></small></div>
+          <span class="museum-look">拖曳環顧　⤢</span>
+        </div>
+        <div class="museum-desk">
+          <div class="museum-room"><span class="museum-folio" data-museum="page"></span><h2 data-museum="title"></h2><i data-museum="en" lang="en"></i><a data-museum="link"></a></div>
+          <div class="museum-transcript"><div class="museum-byline"><strong>RAI</strong><span>展覽導賞員</span></div><p data-museum="words" aria-live="polite"></p><div class="museum-controls"><button type="button" data-museum="listen" aria-pressed="false">▷　聽廣東話導賞</button><div><button type="button" data-museum="prev" aria-label="上一展區">←</button><button type="button" data-museum="next">下一展區　→</button></div></div><small data-museum="notice" role="status"></small></div>
+        </div>
+        <p class="museum-colophon">角色 RAI <span>/</span> SION　 ·　廣東話合成語音</p>
+      </div>
       <div class="bauhaus-hero section-shell">
         <div class="bauhaus-copy">
           <p class="bauhaus-index">SION NG　/　香港　/　作品集</p>

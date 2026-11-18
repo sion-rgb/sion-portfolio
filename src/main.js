@@ -3,6 +3,8 @@ import './journey.css';
 import './embellishments.css';
 import './wabi.css';
 import './bauhaus.css';
+import './museum.css';
+import { initMuseum } from './museum.js';
 import { creativeWorks, projects, experience } from './data.js';
 import { initStory } from './story.js';
 
@@ -95,16 +97,19 @@ dialog.addEventListener('click',event=>{ if(event.target===dialog){const rect=di
 dialog.addEventListener('close',()=>document.body.classList.remove('dialog-open'));
 
 initStory({selectFeature:showFeature});
+const activateMuseum=initMuseum();
 
 const themeToggle=document.querySelector('#theme-toggle');
-const themes=['workbench','wabi','bauhaus'];
+const themes=['workbench','wabi','bauhaus','museum'];
 const themeKey='sion-portfolio-theme';
 function setTheme(value){
   const theme=themes.includes(value)?value:'workbench';
   document.documentElement.classList.toggle('wabi-theme',theme==='wabi');
   document.documentElement.classList.toggle('bauhaus-theme',theme==='bauhaus');
-  document.querySelector('#home').setAttribute('aria-label',theme==='bauhaus'?'包浩斯工業作品集':theme==='wabi'?'侘寂石庭作品集':'創作工作台互動序章');
-  document.title='Sion Ng — '+(theme==='bauhaus'?'Bauhaus Industrial':theme==='wabi'?'Wabi-Sabi Garden':'The Creative Workbench');
+  document.documentElement.classList.toggle('museum-theme',theme==='museum');
+  activateMuseum(theme==='museum');
+  document.querySelector('#home').setAttribute('aria-label',theme==='museum'?'RAI 第一身博物館導賞':theme==='bauhaus'?'包浩斯工業作品集':theme==='wabi'?'侘寂石庭作品集':'創作工作台互動序章');
+  document.title='Sion Ng — '+(theme==='museum'?'RAI 創作博物館':theme==='bauhaus'?'Bauhaus Industrial':theme==='wabi'?'Wabi-Sabi Garden':'The Creative Workbench');
   themeToggle.value=theme;
   document.body.classList.toggle('light-header',theme!=='workbench');
   try{localStorage.setItem(themeKey,theme);}catch{}
@@ -116,8 +121,9 @@ themeToggle.addEventListener('change',()=>{
   setTheme(themeToggle.value);
   const url=new URL(location.href);
   url.searchParams.set('theme',themeToggle.value);
+  if(themeToggle.value==='museum')url.hash='home';
   history.replaceState(history.state,'',url);
-  if(anchor?.id==='home')scrollTo({top:0,behavior:'instant'});
+  if(themeToggle.value==='museum'||anchor?.id==='home')scrollTo({top:0,behavior:'instant'});
   else anchor?.scrollIntoView({behavior:'instant'});
 });
 const linkedTheme=new URLSearchParams(location.search).get('theme');
